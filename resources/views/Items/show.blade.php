@@ -1,92 +1,74 @@
 {{-- \resources\views\users\edit.blade.php --}}
 
 @extends('layouts.master')
-    <style>
-        label{
-            font-size: 25px;
-            font-weight: bold;
-        }
-        span{
-            font-size: 20px;
-        }
-    </style>
+   
 @section('title', 'View Item')
 
 @section('content')
+{{-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
 
-    <div class='col-lg-12 col-lg-offset-2'>
-        <a href="{{ url('itemdata') }}" class="btn btn-primary btn-lg" style="float: right">Back</a>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> --}}
+<link rel="stylesheet" href="{{ asset('assets/css/show.css') }}">
+<!------ Include the above in your HEAD tag ---------->
 
-        <h1><i class='fa fa-eye'></i> View {{$item->item_name}}</h1>
-        <hr>
-    
-        <div class="card  card-table flex-fill">
-            {{-- <div class="card-header">
-                
-                <h4 class="card-title">Item</h4>
-            </div> --}}
-            <div class="card-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <span style="font-weight: bold;font-size:50px">{{$item->item_name}}</span>
-                                <br>
-                                <img src="{{ \Request::root();}}/{{ $item->item_image }}" alt="" width="1000px" height="600px">
-                            </div>
-                        </div>
+	<div class="container">
+		<div class="card">
+			<div class="container-fliud">
+				<div class="wrapper row">
+					<div class="preview col-md-6">
+						
+						<div class="preview-pic tab-content">
+						  <div class="tab-pane active" id="pic-1"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
+						  <div class="tab-pane" id="pic-2"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
+						  <div class="tab-pane" id="pic-3"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
+						  <div class="tab-pane" id="pic-4"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
+						  <div class="tab-pane" id="pic-5"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
+						</div>
+						<ul class="preview-thumbnail nav nav-tabs">
+						  <li class="active"><a data-target="#pic-1" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
+						  <li><a data-target="#pic-2" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
+						  <li><a data-target="#pic-3" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
+						  <li><a data-target="#pic-4" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
+						  <li><a data-target="#pic-5" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
+						</ul>
+						
+					</div>
+					<div class="details col-md-6">
+						<h3 class="product-title">{{$item->item_name}}</h3>
+						<p class="product-description">{{ $item->item_note }}</p>
+						<h5 class="Size">
+                           <span class="code"> Code: </span>&nbsp;&nbsp;<span>{{ $item->item_code }}</span>
+                            <span class="num"> Number:</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ $item->item_numbers }}</span>
+                        </h5>
+                        <h5 class="Size">
+                            <span class="code"> Make: </span>&nbsp;&nbsp;<span>{{ $item->item_make }}</span>
+                             <span class="num"> Model:</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ $item->item_model }}</span>
+                         </h5>
+                        </h5>
+                        <h5 class="price">Year: <span>{{ $item->item_year }}</span></h5>
                         <br>
-                        <div class="row">
-                            <div class="col">
-                                <label for="">Item Name</label><br>
-                                <span>{{ $item->item_name }}</span>
-                            </div>
-                            <div class="col">
-                                <label for="">Item Price</label><br>
-                                <span>${{ $item->price }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="">Item Code </label><br>
-                                <span>{{ $item->item_code }}</span>
-                            </div>
-                            <div class="col">
-                                <label for="">Item Number</label><br>
-                                <span>{{ $item->item_numbers }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="">Make </label><br>
-                                <span>{{ $item->item_make }}</span>
-                            </div>
-                            <div class="col">
-                                <label for="">Model </label><br>
-                                <span>{{ $item->item_model }}</span>
-                            </div>
-                            <div class="col">
-                                <label for="">Year</label><br>
-                                <span>{{ $item->item_year }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="">Platinum Percentage</label><br>
-                                <span>{{ $item->platinum_percentage }}</span>
-                            </div>
-                            <div class="col">
-                                <label for="">Pladium Percentage</label><br>
-                                <span>{{ $item->pladium_percentage }}</span>
-                            </div>
-                            <div class="col">
-                                <label for="">Rhodium Percenatge</label><br>
-                                <span>{{ $item->rhodium_percentage }}</span>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-        </div>
-    </div>
+                        <h4 class="price">current price: &nbsp;&nbsp;<span>${{ $item->price }}</span></h4>
+						{{-- <p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p> --}}
+						<br>
+                        <h4 class="price">Metal Percentage:</h4>
+                        <h5 class="sizes">Platinum:
+							<span class="size" data-toggle="tooltip" title="small">{{ $item->platinum_percentage }}%</span>
+						</h5>
+                        <h5 class="sizes">Pladium:
+							<span class="size" data-toggle="tooltip" title="small">{{ $item->pladium_percentage }}%</span>
+						</h5>
+                        <h5 class="sizes">Rhodium:
+							<span class="size" data-toggle="tooltip" title="small">{{ $item->rhodium_percentage }}%</span>
+						</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 @endsection
 @section('scripts')

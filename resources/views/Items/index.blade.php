@@ -31,6 +31,7 @@
                             <th>Item Code</th>
                             <th>Name</th>
                             <th>Item Number</th>
+                            <th>Price</th>
                             <th>Make</th>
                             <th>Model</th>
                             <th>Year</th>
@@ -89,6 +90,7 @@
             { "data": "item_code" },
             {"data": "item_name" },
             { "data": "item_numbers" },
+            { "data": "price" },
             { "data": "item_make"},
             { "data": "item_model" },
             { "data": "item_year" },
