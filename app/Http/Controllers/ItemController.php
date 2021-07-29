@@ -29,7 +29,7 @@ class ItemController extends Controller
             $items = DB::table('items')->orderBy('id', 'desc');
             return Datatables::of($items)->addColumn('action', function ($id) {
                 return '<a href="item_edit/ '. $id->id.'" class="btn btn-primary">Edit</a>
-                    <a href="view_item/ '. $id->id.'" class="btn btn-success">View</a>
+                    <a href="view_item/ '. $id->id.'" class="btn btn-success" target="_blank">View</a>
                         <button class="btn btn-danger" data-remote="/member/' . $id->id . '">Delete</button>
                   '; })->rawColumns(['image', 'action'])->make(true); 
          } catch (\Throwable $th) {
