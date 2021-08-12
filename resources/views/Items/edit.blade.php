@@ -107,39 +107,39 @@
         type="text/javascript"></script>
 
     <script>
-        var email = $(".email").val();
-        var id = $(".email").attr('id');
-        console.log(id);
-        $('#registration').validate({
-            rules: {
-                email: {
-                    required: true,
-                    remote: {
-                        url: "{{ url('edit/checkemail') }}",
-                        type: "post",
-                        data: {
-                            email: email,
-                            id: id,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        dataFilter: function(data) {
-                            var json = JSON.parse(data);
-                            console.log(data);
-                            if (json.msg == "true") {
-                                return "\"" + "Email address already in use!" + "\"";
-                            } else {
-                                return 'true';
-                            }
-                        }
-                    }
-                }
-            },
-            messages: {
-                email: {
-                    required: "Email is required!",
-                    remote: "Email address already in use!"
-                }
-            }
-        });
+        // var email = $(".email").val();
+        // var id = $(".email").attr('id');
+        // console.log(id);
+        // $('#registration').validate({
+        //     rules: {
+        //         email: {
+        //             required: true,
+        //             remote: {
+        //                 url: "{{ url('edit/checkemail') }}",
+        //                 type: "post",
+        //                 data: {
+        //                     email: email,
+        //                     id: id,
+        //                     _token: "{{ csrf_token() }}"
+        //                 },
+        //                 dataFilter: function(data) {
+        //                     var json = JSON.parse(data);
+        //                     console.log(data);
+        //                     if (json.msg == "true") {
+        //                         return "\"" + "Email address already in use!" + "\"";
+        //                     } else {
+        //                         return 'true';
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     },
+        //     messages: {
+        //         email: {
+        //             required: "Email is required!",
+        //             remote: "Email address already in use!"
+        //         }
+        //     }
+        // });
     </script>
 @endsection

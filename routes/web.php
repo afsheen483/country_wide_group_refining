@@ -47,21 +47,26 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::resource('users', 'UserController')->middleware('auth');
 
-Route::resource('roles', 'RoleController');
+Route::resource('roles', 'RoleController')->middleware('auth');
 
-Route::resource('permissions', 'PermissionController');
+Route::resource('permissions', 'PermissionController')->middleware('auth');
 
 // user management
 Route::get('/permission_edit/{id}', 'PermissionController@edit')->middleware('auth');
 Route::get('/roles_edit/{id}', 'RoleController@edit')->middleware('auth');
-Route::get('/users_edit/{id}', 'UserController@edit');
+Route::get('/users_edit/{id}', 'UserController@edit')->middleware('auth');
 Route::get('dashboard', 'AdminController@index')->middleware('auth');
 
 
 
+
+// active status
+Route::put('/active_status_user/{id}','UserController@StatusUpdate')->middleware('auth');
+
+
 // Route for check email
-Route::post('user/checkemail', 'UserController@userEmailCheck');
-Route::post('edit/checkemail', 'UserController@editEmailCheck');
+Route::post('user/checkemail', 'UserController@userEmailCheck')->middleware('auth');
+Route::post('edit/checkemail', 'UserController@editEmailCheck')->middleware('auth');
 
 
 //Item management 
@@ -73,14 +78,62 @@ Route::get('/create_item', function () {
     return view('Items.create');
 })->name('create_item');
 
-Route::post('/create_item', [ItemController::class, 'store']);
+Route::post('/create_item', [ItemController::class, 'store'])->middleware('auth');
 
-Route::get('/item_edit/{id}', [ItemController::class, 'edit']);
-Route::get('/view_item/{id}', [ItemController::class, 'show']);
-Route::put('/item_update/{id}','ItemController@update');
+Route::get('/item_edit/{id}', [ItemController::class, 'edit'])->middleware('auth');
+Route::get('/view_item/{id}', [ItemController::class, 'show'])->middleware('auth');
+Route::put('/item_update/{id}','ItemController@update')->middleware('auth');
 
-Route::get('/item_delete/{id}', [ItemController::class, 'destroy']);
+Route::put('/item_delete/{id}', [ItemController::class, 'destroy'])->middleware('auth');
 
 // datatables
 Route::get('ajaxdata', 'UserController@index')->name('ajaxdata')->middleware('auth');
 Route::get('ajaxdata/getdata', 'UserController@getdata')->name('ajaxdata.getdata')->middleware('auth');
+
+
+// view history inserted
+Route::post('view_history','ViewedHistoryController@viewHistory')->middleware("auth");
+Route::get('/viewhistory','ViewedHistoryController@index')->name('viewhistory')->middleware("auth");
+Route::get('/viewhistory/getData','ViewedHistoryController@getData')->name('viewhistory.getData')->middleware("auth");
+
+
+// profile
+Route::get('/profile','ProfileSettings@profile')->middleware('auth');
+Route::get('/change_password',function(){
+    return view('ProfileSettings.change_password');
+});
+Route::put('/change_password','ProfileSettings@ChangePassword')->middleware('auth');
+
+// metal price
+
+Route::get('/metal_price',function(){
+    return view('Metals.form');
+});
+Route::post('/metal_price','MetalController@store')->middleware('auth');
+
+
+
+// insert indiviual user price
+Route::put('/insert_price','UserItemController@PriceInssert')->middleware('auth');
+// update prices on the basis of their percenatges
+Route::put('/update_useritem_prices','UserItemController@PriceUpdate')->middleware('auth');
+
+
+// generate invoices
+// Route::get('','InvoiceController@InvoiceGenerate')->middleware('auth');
+// Route::get('/invoice_generate',function(){
+//     return view('Invoices.index');
+// });
+// Route::get('invoice_generate/{id}/{vendor_id}','InvoiceController@InvoiceGenerate')->middleware('auth');
+Route::post('upload_file','InvoiceController@InsertInvoice')->middleware('auth');
+
+// invoices for items
+Route::get('invoice_generate','InvoiceController@GetInvoices')->middleware('auth');
+Route::get('invoice_view/{id}','InvoiceController@ViewInvoices')->middleware('auth');
+
+
+// invoice datatable
+Route::get('/invoice','InvoiceController@index')->name('invoice')->middleware("auth");
+Route::get('/invoice/getData','InvoiceController@getData')->name('invoice.getData')->middleware("auth");
+// signatures save of vendor
+Route::put('save_signature','InvoiceController@Signature')->middleware('auth');

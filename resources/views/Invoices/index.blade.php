@@ -1,106 +1,68 @@
 @extends('layouts.master')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">  
-{{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" /> --}}
-{{-- <link rel="stylesheet" href="https://editor.datatables.net/extensions/Editor/css/editor.dataTables.min.css"> --}}
 
 @section('title')
-    Items
+    Invoices List
 @endsection
-
 @section('headername')
 
-    <a href="{{ url('create_item') }}" style="float: right" class="btn btn-md btn-primary">+ Add Item</a>
-
-    <a href="/metal_price" target="_blank" style="float: right; margin-right:0.1%" class="btn btn-md btn-success">Metal Price</a>
-    <div class="container-fluid" >
-        <form class="form-inline"  id="inline_form" style="float: right;margin-right:0.1%">
-            <label for="">Update Price by %</label>&nbsp;&nbsp;
-            <input type="number" id="percentage" max="100" min="0" name="percentage" class="form-control col-2" required>&nbsp;&nbsp;
-
-            {{-- <label for="">Pladium</label>&nbsp;&nbsp;
-            <input type="text" id="pladium" placeholder="Enter Pladium Percentage...." name="pladium_percentage" class="form-control">&nbsp;&nbsp;
-            <label for="">Rhodium</label>&nbsp;&nbsp;
-            <input type="text" id="rhodium" placeholder="Enter Rhodium Percentage...." name="rhodium_percentage" class="form-control">&nbsp;&nbsp; --}}
-            <button  class="btn btn-success btn-md" id="update_prices">Price update</button>
-          </form>
-    </div>
-    Items
 @endsection
-
 @section('content')
-       
-						
-    <!-- Feed Activity -->
+       <!-- Feed Activity -->
     <div class="card  card-table flex-fill">
-        <div class="card-header">
-            <form action="{{ url('invoice_generate') }}" target="_blank" method="get">
-                @csrf
-                <input type="text" name="item_id"  id="item_ids" hidden=""> 
-                {{-- <input type="text" name="vendor_id"  id="vendor_id" hidden="">  --}}
-                <button style="display: none" id="one"  class="btn btn-lg btn-primary" type="submit">Generate Invoice</button>
-            </form>
-        </div>
-        <div class="card-body">
-            <br>
-           
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-3 col-lg-2 col-sm-2 col-3">
-                        <label for=""></label>
-                        <select name="user_id" id="user_id" class="form-control">
-                            <option value="All">All User</option>
-                            @foreach ($user_array as $user)
-                                <option value="{{ $user->id }}">{{ $user->first_name }}{{ " " }}{{ $user->last_name }}</option>
-                            @endforeach
-                        </select>    
-                    </div>
-                    <div class="col-md-3 col-lg-3 col-sm-2 col-3" style="margin-top: 0.5%">
-                            {{-- <button type="button" class="btn btn-md btn-success" id="update_percentage">Percentage</button> --}}
-                    </div>
-                </div>
-            </div>
-               <br>
-            <div class="table-responsive">
-                <table class="table" id="mytable" style="width: 100%">
-                    <thead>
-                        <tr>		
-                            <th><input type="checkbox" name="checkAll" id="selectAll" value=""></th>	
-                            <th>ID</th>								
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Number</th>
-                            <th>Price</th>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Year</th>
-                            <th>Note</th>
-                            <th>Platinum <br>
-                            Percentage</th>
-                            <th>Pladium <br>
-                             Percentage</th>
-                            <th>Rhodium <br>
-                            Percentage</th>
-                            <th>Action</th>
+      <div class="card-header">
+          {{-- <form action="{{ url('invoices') }}" target="_blank" method="get">
+              @csrf
+              <input type="text" name="item_id"  id="item_ids" hidden=""> 
+              {{-- <input type="text" name="vendor_id"  id="vendor_id" hidden="">  --}}
+              {{-- <button style="display: none" id="one"  class="btn btn-lg btn-primary" type="submit">Generate Invoice</button>
+          </form>  --}}
+      </div>
+      <div class="card-body">
+          <br>
+         
+          <div class="container-fluid">
+              {{-- <div class="row">
+                  <div class="col-md-3 col-lg-2 col-sm-2 col-3">
+                      <label for=""></label>
+                      <select name="user_id" id="user_id" class="form-control">
+                          <option value="All">All User</option>
+                          @foreach ($user_array as $user)
+                              <option value="{{ $user->id }}">{{ $user->first_name }}{{ " " }}{{ $user->last_name }}</option>
+                          @endforeach
+                      </select>    
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-sm-2 col-3" style="margin-top: 0.5%">
+                          {{-- <button type="button" class="btn btn-md btn-success" id="update_percentage">Percentage</button> --}}
+                  </div>
+              </div> 
+          </div>
+             <br>
+          <div class="table-responsive">
+              <table class="table" id="mytable" style="width: 100%">
+                  <thead>
+                      <tr>		
                          
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                          <th>Invoice ID</th>
+                          <th>Invoice File</th>
+                          <th>Invoice Date</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                       
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
 
-                  
-            </div>
-        </div>
-   
-    <!-- /Feed Activity -->
-    
+                
+          </div>
+      </div>
+ 
+  <!-- /Feed Activity -->
+  
 </div>
 
-
-
 @endsection
-
 @section('scripts')
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
@@ -126,36 +88,31 @@ var table =  $('#mytable').DataTable({
         "serverSide": true,
         
         "ajax": {
-            "url": "{{ route('itemdata.getdata') }}",
+            "url": "{{ route('invoice.getData') }}",
             "type": "GET"
         },
        
-        "columnDefs": [
-        { "class": "item_price" ,"targets": 5, 'createdCell':  function (td, cellData, rowData, row, col) {
-           $(td).attr('contenteditable', 'true'); 
-        }
-        },        
-    ],
+    //     // "columnDefs": [
+    //     // { "class": "item_price" ,"targets": 5, 'createdCell':  function (td, cellData, rowData, row, col) {
+    //     //    $(td).attr('contenteditable', 'true'); 
+    //     // }
+    //     },        
+    // ],
         "columns":[
-            {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+           
             // { data: 'item_image', name: 'item_image',
             //         render: function( data, type, full, meta ) {
             //             return "<img src=\"/" + data + "\" height=\"50\"/>";
             //         }
             //     },
             
+            // { "data": "id" },
             { "data": "id" },
-            { "data": "item_code" },
-            {"data": "item_name" },
-            { "data": "item_numbers" },
-            { "data": "price" },
-            { "data": "item_make"},
-            { "data": "item_model" },
-            { "data": "item_year" },
-            { "data": "item_note" },
-            { "data": "platinum_percentage","name":"platinum_percentage" },
-            { "data": "pladium_percentage" },
-            { "data": "rhodium_percentage" },      
+            { "data": "invoice_file" },
+            { "data": "invoice_date" },
+            { "data": "status" },
+            
+          
             {data: 'action', name: 'action', orderable: false, searchable: false}
           
         ],

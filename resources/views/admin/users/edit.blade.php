@@ -91,7 +91,7 @@
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js" type="text/javascript"></script>
 
-<script>
+{{-- <script>
       var email =  $(".email").val();
       var id = $(".email").attr('id');
       console.log(id);
@@ -126,5 +126,5 @@
             }
         }
     });
-</script>
+</script> --}}
 @endsection

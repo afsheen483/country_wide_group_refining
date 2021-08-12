@@ -25,7 +25,9 @@
                     <th>Postal Code</th>
                     <th>Phone Number</th>
                     <th>Date/Time Added</th>
-                    <th>User Roles</th>
+                    <th>Status</th>
+                    {{-- <th>User Roles</th> --}}
+                    <th>Action</th>
                    
                 </tr>
             </thead>
@@ -48,6 +50,8 @@
         <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>    
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <script>
 $(document).ready(function() {
 //     $('#mytable tfoot th').each(function() {
@@ -61,7 +65,7 @@ $(document).ready(function() {
         "serverSide": true,
         "ajax": {
             "url": "{{ route('ajaxdata.getdata') }}",
-            "type": "GET"
+            "type": "GET",
         },
        
         "columns":[
@@ -72,8 +76,9 @@ $(document).ready(function() {
             { "data": "province" },
             { "data": "postal_code" },
             { "data": "phone_num" },
-            { "data": "created_at" },
-            { "data": "updated_at" },
+            { data: "created_at",name: 'created_at' },
+            { "data": "status" },
+            {data: 'action', name: 'action', orderable: false, searchable: false}
           
         ],
     //     initComplete: function() {
@@ -93,7 +98,39 @@ $(document).ready(function() {
     //   });
     // }
      });
-    
+     $('#mytable').on('click', '.check_btn', function () {
+          var id = $(this).data("check");
+          console.log(id);
+          var url = "{{url('active_status_user')}}/"+id;
+         
+                      $.ajax({
+                      
+                        url : url,
+                        type : 'PUT',
+                        cache: false,
+                        data: {_token:'{{ csrf_token() }}'},
+                        success:function(data){
+                         if (data == 1) {
+                          Swal.fire({
+                                title:'Congratulations!',
+                                text:'User has been deactivated successfully!',
+                                type: 'success',
+                              })
+                              location.reload();
+                         }if(data == 0){
+                            Swal.fire({
+                                title:'Congratulations!',
+                                text:'User has been activated successfully!',
+                                type: 'success',
+                              })
+                              location.reload();
+                         }
+                        
+                        }
+              
+              });
+               
+        });
 
  
 });

@@ -105,40 +105,5 @@
  
 @endsection
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"
-        type="text/javascript"></script>
-
-    <script>
-        var email = $("#email").val();
-        $('#registration').validate({
-            rules: {
-                email: {
-                    required: true,
-                    remote: {
-                        url: "{{ url('user/checkemail') }}",
-                        type: "post",
-                        data: {
-                            email: $(email).val(),
-                            _token: "{{ csrf_token() }}"
-                        },
-                        dataFilter: function(data) {
-                            var json = JSON.parse(data);
-                            console.log(data);
-                            if (json.msg == "true") {
-                                return "\"" + "Email address already in use!" + "\"";
-                            } else {
-                                return 'true';
-                            }
-                        }
-                    }
-                }
-            },
-            messages: {
-                email: {
-                    required: "Email is required!",
-                    remote: "Email address already in use!"
-                }
-            }
-        });
-    </script>
+   
 @endsection

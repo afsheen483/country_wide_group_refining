@@ -92,19 +92,32 @@
 					
 					<!-- User Menu -->
 					<li class="nav-item dropdown has-arrow">
-						<a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown">
-							<span class="user-img">
-								<img class="rounded-circle" src="{{ asset('assets/img/user.jpg') }}" width="24" alt="Admin">
-								<span class="status online"></span>
-							</span>
-							<span>{{ Auth::user()->name }}</span>
+						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+							<span class="user-img"><img class="rounded-circle" src="assets/img/profiles/avatar-01.jpg" width="31" alt="Ryan Taylor"></span>
 						</a>
 						<div class="dropdown-menu">
+							<div class="user-header">
+								<div class="avatar avatar-sm">
+									<img src="assets/img/profiles/avatar-01.jpg" alt="User Image" class="avatar-img rounded-circle">
+								</div>
+								{{-- <div class="user-text">
+									<h6>{{ Auth::user()->first_name }}{{ " " }}{{ Auth::user()->last_name }}</h6>
+									<p class="text-muted mb-0">@if (Auth::user()->hasrole('admin'))
+										{{ "Admin" }}
+									@else
+										{{ "User" }}
+									@endif</p>
+								</div> --}}
+							</div>
+							<a class="dropdown-item" href="/profile">My Profile</a>
+							<a class="dropdown-item" href="/change_password">Password</a>
+						
 								<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
 								document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
 						  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
 							  @csrf   
 						  </form>
+						
 						</div>
 					</li>
 					<!-- /User Menu -->
@@ -123,12 +136,18 @@
 							<li class="menu-title"> 
 								<span>Main</span>
 							</li>
-							<li class="active"> 
+							<li id="d"> 
 								<a href="dashboard"><i class="fa fa-dashboard"></i> 
 									<span>Dashboard</span></a>
 							</li>
 							<li> 
 								<a href="/itemdata"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Items</span></a>
+							</li>
+							<li> 
+								<a href="/invoice"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Invoices</span></a>
+							</li>
+							<li> 
+								<a href="/viewhistory"><i class="fa fa-history" aria-hidden="true"></i><span>View History</span></a>
 							</li>
 							<li class="submenu">
 								<a href="#"><i class="fe fe-document"></i> <span> User Management</span> <span class="menu-arrow"></span></a>
@@ -215,6 +234,18 @@
 
 
     </body>
+	<script>
+		 $(document).ready(function () {
+        var url = window.location;
+    // Will only work if string in href matches with location
+        $('.sidebar a[href="' + url + '"]').parent().addClass('active');
 
+    // Will also work for relative and absolute hrefs
+        $('.sidebar a').filter(function () {
+            return this.href == url;
+        }).parent().addClass('active').parent().parent().addClass('active');
+
+        });
+	</script>
 <!-- Mirrored from doccure-html.dreamguystech.com/template/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 17 Nov 2020 04:02:56 GMT -->
 </html>

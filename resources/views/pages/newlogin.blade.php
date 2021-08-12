@@ -38,7 +38,7 @@
             	<div class="container">
                 	<div class="loginbox">
                     	<div class="login-left">
-							<img src="{{ asset('assets/img/favicon.png') }}" alt="" height="200px" width="100px">
+							{{-- <img src="{{ asset('assets/img/favicon.png') }}" alt="" height="200px" width="100px"> --}}
 							{{-- <p id="name">Country Wide Refining
 							</p> --}}
                         </div>

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\UserItemModel;
 use Auth;
 use DataTables;
+use DB;
 use Illuminate\Support\Facades\Hash;
 //Importing laravel-permission models
 use Spatie\Permission\Models\Role;
@@ -36,8 +38,17 @@ class UserController extends Controller {
     //Get all users and pass it to the view
        try {
 
-        $data = User::select('*'); 
-        return Datatables::of($data)->make(true);
+        $user = DB::select("SELECT * FROM users  ORDER BY id DESC"); 
+        return Datatables::of($user)->editColumn('created_at', function ($contact){
+            return date('F d, Y h:ia', strtotime($contact->created_at) );
+        })->addColumn('action', function ($id) {
+            return ' <a  style="color: green;cursor: pointer;" id="'.$id->id.'" data-check="'.$id->id.'" class="check_btn"><i class="fa fa-check"></i></a> | <a href="users_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
+                <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
+              '; })->addColumn('status', function ($user) {
+                if ($user->is_activate == 0) return '<span class="btn btn-sm bg-success-light">Activate</span>';
+                if ($user->is_activate == 1) return '<span class="btn btn-sm bg-danger-light">Deactivated</span>';
+                return 'Cancel';
+            })->rawColumns(['action','status'])->make(true);
 
        } catch (\Exception $e) {
           
@@ -78,6 +89,8 @@ class UserController extends Controller {
     public function store(Request $request) {
     //Validate name, email and password fields
         try {
+            $user_id = Auth::user()->id;
+            $date = date("Y-m-d");
            //dd($request->all());
             $this->validate($request, [
                 'email'=>'required|unique:users',
@@ -85,7 +98,6 @@ class UserController extends Controller {
             ]);
     
             $user = User::create($request->only('email', 'first_name','last_name','address','city_name','province','postal_code','phone_num', 'password')); //Retrieving only the email and password data
-    
             $roles = $request['roles']; //Retrieving the roles field
         //Checking if a role was selected
             if (isset($roles)) {
@@ -94,7 +106,19 @@ class UserController extends Controller {
                 $role_r = Role::where('id', '=', $role)->firstOrFail();            
                 $user->assignRole($role_r); //Assigning role to user
                 }
-            }   
+            }
+          $data =  DB::table('users')->orderBy('id','desc')->first();
+          $items = DB::select("SELECT * FROM items");
+           //dd($data->id);
+           foreach ($items as $item) {
+            UserItemModel::create([
+                'item_id' => $item->id,
+                'user_id' => $data->id,
+                'date' => $date,
+                'created_by' => $user_id
+            ]);
+           }
+          
             return redirect()->route('users.index')
          ->with('flash_message',
           'User successfully added.');     
@@ -102,9 +126,11 @@ class UserController extends Controller {
            
         } catch (\Exception $e) {
             //throw $th;
+            dd($e);
             //  return $e->getMessage();
             return back()->withInput()->with(['msg' , $e->getMessage()]);
         }catch (\Throwable $ex) {
+            dd($ex);
             // return $ex->getMessage();
             return back()->withInput()->with(['msg' , $ex->getMessage()]);
          }
@@ -265,4 +291,25 @@ class UserController extends Controller {
             return \Response::json(array('msg' => 'false'));
         }
     }
+    public function StatusUpdate($id)
+    {
+       $is_active = User::where('id','=',$id)->get();
+       //dd($is_active);
+       if($is_active[0]->is_activate == 0){
+           $update = User::where('id','=',$id)->update([
+                'is_activate' => '1'
+           ]);
+           if ($update) {
+               return 1;
+           }
+       } 
+       if ($is_active[0]->is_activate == 1) {
+        $update = User::where('id','=',$id)->update([
+            'is_activate' => '0'
+       ]);
+       if ($update) {
+           return 0;
+       }
+    }
+}
 }
