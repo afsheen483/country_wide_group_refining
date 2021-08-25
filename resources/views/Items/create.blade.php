@@ -10,14 +10,16 @@
 
 @section('content')
 
+   <div class="card">
+       <br>
     <div class='col-lg-12 col-lg-offset-4'>
-        <p>Error: @if (isset($msg))
+        {{-- <p>Error: @if (isset($msg))
                 {{ $msg }}{{ 'There is an error' }}
             @else
                 {{ 'No error' }}
             @endif
-        </p>
-        <a href="{{ url('itemdata') }}" class="btn btn-primary btn-lg" style="float: right">Back</a>
+        </p> --}}
+        <a href="{{ url('itemdata') }}" class="btn btn-primary" style="float: right">Back</a>
         <h1><i class='fa fa-plus'></i> Add Item</h1>
         <hr>
 
@@ -99,11 +101,30 @@
             {{ Form::submit('Add Item', ['class' => 'btn btn-primary']) }}
 
             {{ Form::close() }}
+            <button type="button" class="btn btn-success" style="margin-left:7%;margin-top:-4.1%;" id="bulk_file">Bulk File</button>
+            <div class="col-4 col-lg-4 col-md-4" style="margin-left: 15%;margin-top:-3.8%">
+            <form action="{{ route('file-import') }}" method="POST" enctype="multipart/form-data" id="bulk_form" class="form-inline" style="display: none">
+                @csrf
+                
+                        <input type="file" name="file" >
+                        {{-- <label class="custom-file-label" for="customFile">Choose file</label> --}}
+                   
+                <button class="btn btn-primary">Import data</button>
+                {{-- <a class="btn btn-success" href="{{ route('file-export') }}">Export data</a> --}}
+            </form>
+            </div>
         </div>
 
     </div>
+   </div>
  
 @endsection
 @section('scripts')
-   
+    <script>
+        $(document).ready(function(){
+            $("#bulk_file").click(function(){
+                $("#bulk_form").toggle();
+            });
+        });
+    </script> 
 @endsection

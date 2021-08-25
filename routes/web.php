@@ -125,6 +125,10 @@ Route::put('/update_useritem_prices','UserItemController@PriceUpdate')->middlewa
 //     return view('Invoices.index');
 // });
 // Route::get('invoice_generate/{id}/{vendor_id}','InvoiceController@InvoiceGenerate')->middleware('auth');
+
+
+
+
 Route::post('upload_file','InvoiceController@InsertInvoice')->middleware('auth');
 
 // invoices for items
@@ -137,3 +141,8 @@ Route::get('/invoice','InvoiceController@index')->name('invoice')->middleware("a
 Route::get('/invoice/getData','InvoiceController@getData')->name('invoice.getData')->middleware("auth");
 // signatures save of vendor
 Route::put('save_signature','InvoiceController@Signature')->middleware('auth');
+
+// bulk items
+Route::post('file-import', [ItemController::class, 'fileImport'])->name('file-import');
+Route::get('invoice_slip/{id}','InvoiceController@InvoiceSlip' );
+

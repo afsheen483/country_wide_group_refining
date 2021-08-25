@@ -1,76 +1,102 @@
-{{-- \resources\views\users\edit.blade.php --}}
-
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    
+<link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/owl.theme.default.min.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/css/ionicons.min.css">
+<link rel="stylesheet" href="{{ asset('assets/css/style1.css') }}">
 @extends('layouts.master')
-   
+
 @section('title', 'View Item')
 
 @section('content')
-{{-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+  
+<div class="card  card-table flex-fill">
 
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> --}}
-<link rel="stylesheet" href="{{ asset('assets/css/show.css') }}">
-<!------ Include the above in your HEAD tag ---------->
+    <div class="card-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <br><br><br><br><br><br><br><br><br>
+                        <h2 class="heading-section mb-5">Item Details</h2>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="featured-carousel owl-carousel">
+                            <div class="item">
+                                <div class="work-wrap d-md-flex">
+                                    <div class="img order-md-last" style='background-image: url({{ asset("$item->item_image") }})'></div>
+                                        <div class="text text-left text-lg-right p-4 px-xl-5 d-flex align-items-center">
+                                        <div class="desc w-100">
+                                            <h2 class="mb-4">{{ $item->item_name }} <br> <i class="fa fa-dollar"></i>{{ number_format((float)$item->price, 2, '.', '') }}</h2>
+                                            <p class="h5 mb-4">Item Code: {{ $item->item_code }}</p>
+                                            <p class="h5 mb-4">Number: {{ $item->item_numbers }}</p>
+                                            <p class="h5 mb-4">Model: {{ $item->item_model }}</p>
+                                            <p class="h5 mb-4">Make: {{ $item->item_make }}</p>
+                                            <div class="row justify-content-end">
+                                                <div class="col-xl-8">
+                                                    <p></p>
+                                                </div>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="work-wrap d-md-flex">
+                                    <div class="img order-md-last" style='background-image: url({{ asset("$item->item_image") }})'></div>
+                                        <div class="text text-left text-lg-right p-4 px-xl-5 d-flex align-items-center">
+                                            <div class="desc w-100">
+                                                <h2 class="mb-4">{{ $item->item_name }}  <br> Description </h2>
+                                                
+                                                <div class="row justify-content-end">
+                                                    <div class="col-xl-8">
+                                                        <p>{{ $item->item_note }}</p>
+                                                    </div>
+                                                </div>
+                                               
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @hasrole('admin')
+                            <div class="item">
+                                <div class="work-wrap d-md-flex">
+                                    <div class="img order-md-last" style='background-image: url({{ asset("$item->item_image") }})'></div>
+                                        <div class="text text-left text-lg-right p-4 px-xl-5 d-flex align-items-center">
+                                            <div class="desc w-100">
+                                                <h2 class="mb-4">Metal  <br> Percentage</h2>
+                                                
+                                                <div class="row justify-content-end">
+                                                    <div class="col-xl-8">
+                                                        <p></p>
+                                                    </div>
+                                                </div>
+                                                <p class="h5 mb-4">
+                                                    Platinum % : {{ $item->platinum_percentage }}
+                                                </p>
+                                                <p class="h5 mb-4">
+                                                    Pladium % : {{ $item->pladium_percentage }}
+                                                </p>
+                                                <p class="h5 mb-4">
+                                                    Rhodium % : {{ $item->rhodium_percentage }}
+                                                </p>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endhasrole
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+        </div>
 
-	<div class="container">
-		<div class="card">
-			<div class="container-fliud">
-				<div class="wrapper row">
-					<div class="preview col-md-6">
-						
-						<div class="preview-pic tab-content">
-						  <div class="tab-pane active" id="pic-1"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
-						  <div class="tab-pane" id="pic-2"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
-						  <div class="tab-pane" id="pic-3"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
-						  <div class="tab-pane" id="pic-4"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
-						  <div class="tab-pane" id="pic-5"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></div>
-						</div>
-						<ul class="preview-thumbnail nav nav-tabs">
-						  <li class="active"><a data-target="#pic-1" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
-						  <li><a data-target="#pic-2" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
-						  <li><a data-target="#pic-3" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
-						  <li><a data-target="#pic-4" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
-						  <li><a data-target="#pic-5" data-toggle="tab"><img src="{{ \Request::root();}}/{{ $item->item_image }}" /></a></li>
-						</ul>
-						
-					</div>
-					<div class="details col-md-6">
-						<h3 class="product-title">{{$item->item_name}}</h3>
-						<p class="product-description">{{ $item->item_note }}</p>
-						<h5 class="Size">
-                           <span class="code"> Code: </span>&nbsp;&nbsp;<span>{{ $item->item_code }}</span>
-                            <span class="num"> Number:</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ $item->item_numbers }}</span>
-                        </h5>
-                        <h5 class="Size">
-                            <span class="code"> Make: </span>&nbsp;&nbsp;<span>{{ $item->item_make }}</span>
-                             <span class="num"> Model:</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ $item->item_model }}</span>
-                         </h5>
-                        </h5>
-                        <h5 class="price">Year: <span>{{ $item->item_year }}</span></h5>
-                        <br>
-                        <h4 class="price">current price: &nbsp;&nbsp;<span>${{ $item->price }}</span></h4>
-						{{-- <p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p> --}}
-						<br>
-                        <h4 class="price">Metal Percentage:</h4>
-                        <h5 class="sizes">Platinum:
-							<span class="size" data-toggle="tooltip" title="small">{{ $item->platinum_percentage }}%</span>
-						</h5>
-                        <h5 class="sizes">Pladium:
-							<span class="size" data-toggle="tooltip" title="small">{{ $item->pladium_percentage }}%</span>
-						</h5>
-                        <h5 class="sizes">Rhodium:
-							<span class="size" data-toggle="tooltip" title="small">{{ $item->rhodium_percentage }}%</span>
-						</h5>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-@endsection
-@section('scripts')
-    
-@endsection
+   @section('scripts')
+   <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+   <script src="{{ asset('assets/js/popper.js') }}"></script>
+   <script src="{{ asset('assets/js/bootstrap1.min.js') }}"></script>
+   <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+   <script src="{{ asset('assets/js/main.js') }}"></script>
+   @endsection

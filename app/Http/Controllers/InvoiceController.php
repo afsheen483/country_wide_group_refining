@@ -137,15 +137,15 @@ class InvoiceController extends Controller
     {
         try {
             $items = DB::select("SELECT
-            
             inh.invoice_file,
             inh.invoice_date,
             inh.is_completed,
-            inh.id
+            inh.id,
+            inh.vendor_id,
+            CONCAT(u.first_name,' ',u.last_name) AS vendor_name
         FROM
             invoice_head inh
-		
-        
+         JOIN users u ON u.id = inh.vendor_id 
         WHERE
             inh.is_deleted = 0
          ORDER BY
@@ -154,7 +154,8 @@ class InvoiceController extends Controller
             return Datatables::of($items)->addColumn('action', function ($id) {
                 return '
                     <a href="invoice_view/'. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
-                    <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
+                    <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a> |
+                    <a href="invoice_slip/'. $id->id.'" style="color: blue;cursor: pointer;" id="'.$id->id.'" data-invoice="'.$id->id.'" class="invoice_view" target="_blank"><i class="fas fa-file-invoice-dollar"></i></a>
                   '; })->addColumn('invoice_file', function ($row) {
                     return '<a href='. $row->invoice_file.' style="color: blue;cursor: pointer;" target="_blank">'.$row->invoice_file.'</a> 
                       
@@ -205,5 +206,39 @@ class InvoiceController extends Controller
             //throw $th;
             dd($th);
         }
+    }
+    public function InvoiceSlip($id)
+    {
+       try {
+        $items =  DB::select("SELECT
+        h.vendor_id,
+        h.vendor_signature,
+        h.invoice_file,
+        h.invoice_date,
+        i.item_code,
+        h.created_by,
+        i.item_name,
+        i.item_numbers,
+        i.item_make,
+        i.item_make,
+        i.item_model,
+        i.item_year,
+        i.item_note,
+        i.price
+    FROM
+        invoice_head h
+    JOIN invoice_details d ON
+        d.invoice_head_id = h.id
+    JOIN items i ON
+        i.id = d.item_id
+    WHERE
+        h.id = '".$id."'
+        ORDER BY h.id DESC");
+        //dd($items);
+        return view('Invoices.invoice_slip',compact('items'));
+       } catch (\Throwable $th) {
+           //throw $th;
+           dd($th);
+       }
     }
 }

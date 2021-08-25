@@ -11,14 +11,16 @@
 
 @section('content')
 
+   <div class="card">
+       <br>
     <div class='col-lg-12 col-lg-offset-2'>
-        <a href="{{ url('itemdata') }}" class="btn btn-primary btn-lg" style="float: right">Back</a>
+        <a href="{{ url('itemdata') }}" class="btn btn-primary" style="float: right">Back</a>
 
         <h1><i class='fa fa-pencil'></i> Edit {{$item->item_name}}</h1>
         <hr>
     
     <div style="margin-left: 20%">
-        <form action="{{ url('item_update',['id' => $item->id]) }}" method="post">
+        <form action="{{ url('item_update',['id' => $item->id]) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('PUT')
        
@@ -100,6 +102,7 @@
     </div>
 
     </div>
+   </div>
 
 @endsection
 @section('scripts')

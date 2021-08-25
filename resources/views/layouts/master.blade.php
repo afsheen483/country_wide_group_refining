@@ -144,13 +144,14 @@
 								<a href="/itemdata"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Items</span></a>
 							</li>
 							<li> 
-								<a href="/invoice"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Invoices</span></a>
+								<a href="/invoice"><i class="far fa-file-invoice"></i> <span>Invoices</span></a>
 							</li>
 							<li> 
 								<a href="/viewhistory"><i class="fa fa-history" aria-hidden="true"></i><span>View History</span></a>
 							</li>
 							<li class="submenu">
-								<a href="#"><i class="fe fe-document"></i> <span> User Management</span> <span class="menu-arrow"></span></a>
+								<a href="#"><i class="fa fa-user" aria-hidden="true"></i>
+									<span> User Management</span> <span class="menu-arrow"></span></a>
 								<ul style="display: none;">
 									<li><a href="/ajaxdata">Users</a></li>
 									<li><a href="/roles">Roles</a></li>

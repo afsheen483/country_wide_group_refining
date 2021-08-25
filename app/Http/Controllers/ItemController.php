@@ -8,6 +8,8 @@ use App\Models\ItemModel;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use DataTables;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ItemImport;
 class ItemController extends Controller
 {
     /**
@@ -40,10 +42,11 @@ class ItemController extends Controller
                 i.metals,
                 i.weight,
                 i.item_image,
-                CONCAT('$', i.price) AS price,
+                CONVERT(i.price,decimal(10,2)) AS price,
                 CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
                 CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
-                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage
+                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
+                (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
             FROM
                 items i
             WHERE
@@ -76,11 +79,12 @@ class ItemController extends Controller
                 u.item_id,
                 u.date,
                 u.user_id,
-    
-                CONCAT('$', u.user_items_price) AS price,
+                
+                CONVERT(u.user_items_price,decimal(10,2)) AS price,
                 CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
                 CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
-                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage
+                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
+                (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
             FROM
                 items i
             JOIN user_items u ON
@@ -111,10 +115,11 @@ class ItemController extends Controller
                         i.metals,
                         i.weight,
                         i.item_image,
-                        CONCAT('$', i.price) AS price,
+                        CONVERT(i.price,decimal(10,2)) AS price,
                         CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
                         CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
-                        CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage
+                        CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
+                        (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
                     FROM
                         items i
                     WHERE
@@ -253,7 +258,7 @@ class ItemController extends Controller
                 'modified_by' => $user_id,
                 'modified_at' => $date
             ]);
-            return redirect()->route('items');
+            return redirect()->route('itemdata');
         } catch (\Throwable $th) {
             dd($th);
         }
@@ -274,6 +279,16 @@ class ItemController extends Controller
            if ($delete_item) {
                return 1;
            }
+       } catch (\Throwable $th) {
+           //throw $th;
+           dd($th);
+       }
+    }
+    public function fileImport(Request $request) 
+    {
+       try {
+        Excel::import(new ItemImport, $request->file('file')->store('temp'));
+        return back();
        } catch (\Throwable $th) {
            //throw $th;
            dd($th);

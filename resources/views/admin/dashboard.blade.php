@@ -106,6 +106,29 @@
            </a>
         </div>
     </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+           <a href="/invoice">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon text-warning border-warning">
+                        <i class="fe fe-folder"></i>
+                    </span>
+                    <div class="dash-count">
+                        <h3>{{ \DB::table('invoice_head')->where('is_deleted','=','0')->get()->count() }}</h3>
+                    </div>
+                </div>
+                <div class="dash-widget-info">
+                    
+                    <h6 class="text-muted">Total Invoice</h6>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-warning w-50"></div>
+                    </div>
+                </div>
+            </div>
+           </a>
+        </div>
+    </div>
 </div>
 @endsection
 

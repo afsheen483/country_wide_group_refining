@@ -15,7 +15,7 @@
     <a href="/metal_price" target="_blank" style="float: right; margin-right:0.1%" class="btn btn-md btn-success">Metal Price</a>
     <div class="container-fluid" >
         <form class="form-inline"  id="inline_form" style="float: right;margin-right:0.1%">
-            <label for="">Update Price by %</label>&nbsp;&nbsp;
+            <label for="" style="font-size: 25px;">Update Price by %</label>&nbsp;&nbsp;
             <input type="number" id="percentage" max="100" min="0" name="percentage" class="form-control col-2" required>&nbsp;&nbsp;
 
             {{-- <label for="">Pladium</label>&nbsp;&nbsp;
@@ -29,18 +29,16 @@
 @endsection
 
 @section('content')
-       
+    <form action="{{ url('invoice_generate') }}" target="_blank" method="get">
+        @csrf
+        <input type="text" name="item_id"  id="item_ids" hidden=""> 
+        {{-- <input type="text" name="vendor_id"  id="vendor_id" hidden="">  --}}
+        <button style="display: none" id="one"  class="btn btn-primary" type="submit">Generate Invoice</button>
+    </form>
 						
     <!-- Feed Activity -->
     <div class="card  card-table flex-fill">
-        <div class="card-header">
-            <form action="{{ url('invoice_generate') }}" target="_blank" method="get">
-                @csrf
-                <input type="text" name="item_id"  id="item_ids" hidden=""> 
-                {{-- <input type="text" name="vendor_id"  id="vendor_id" hidden="">  --}}
-                <button style="display: none" id="one"  class="btn btn-lg btn-primary" type="submit">Generate Invoice</button>
-            </form>
-        </div>
+       
         <div class="card-body">
             <br>
            
@@ -70,18 +68,22 @@
                             <th>Code</th>
                             <th>Name</th>
                             <th>Number</th>
-                            <th>Price</th>
                             <th>Make</th>
                             <th>Model</th>
                             <th>Year</th>
-                            <th>Note</th>
+                            @hasrole('admin')
+                            <th>Price($)</th>
+<!--                             <th>Note</th>
+ -->                        
                             <th>Platinum <br>
-                            Percentage</th>
-                            <th>Pladium <br>
-                             Percentage</th>
-                            <th>Rhodium <br>
-                            Percentage</th>
+                                Percentage</th>
+                                <th>Pladium <br>
+                                Percentage</th>
+                                <th>Rhodium <br>
+                                Percentage</th>
+                            @endhasrole
                             <th>Action</th>
+                            <th></th>
                          
                         </tr>
                     </thead>
@@ -116,7 +118,19 @@
 //     $('#mytable tfoot th').each(function() {
 //     var title = $(this).text();
 //     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-//   });
+// //   });
+// "rowCallback": function( row, data, index ) {
+//        var d =  $( row )
+//             .attr('data-price');
+//             alert(d);
+//         if ( {data:"same_col"} > 0 )
+//        
+//         else
+//         {
+//             $('td', row).css('background-color', 'Orange');
+//         }
+//     },
+
 
 var table =  $('#mytable').DataTable({
         destroy: true,
@@ -131,50 +145,72 @@ var table =  $('#mytable').DataTable({
         },
        
         "columnDefs": [
-        { "class": "item_price" ,"targets": 5, 'createdCell':  function (td, cellData, rowData, row, col) {
+        { "class": "item_price" ,"targets": 8, 'createdCell':  function (td, cellData, rowData, row, col) {
+        @hasrole('admin')
            $(td).attr('contenteditable', 'true'); 
+        @endhasrole
         }
-        },        
+        },    
+
     ],
         "columns":[
             {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
-            // { data: 'item_image', name: 'item_image',
-            //         render: function( data, type, full, meta ) {
-            //             return "<img src=\"/" + data + "\" height=\"50\"/>";
-            //         }
-            //     },
-            
             { "data": "id" },
             { "data": "item_code" },
             {"data": "item_name" },
             { "data": "item_numbers" },
-            { "data": "price" },
             { "data": "item_make"},
             { "data": "item_model" },
             { "data": "item_year" },
-            { "data": "item_note" },
+            @hasrole('admin')
+            { "data": "price" },
+            // { "data": "item_note" },
+            
             { "data": "platinum_percentage","name":"platinum_percentage" },
             { "data": "pladium_percentage" },
-            { "data": "rhodium_percentage" },      
-            {data: 'action', name: 'action', orderable: false, searchable: false}
+            { "data": "rhodium_percentage" },   
+            @endhasrole   
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+
+             { data:'same_col',name:'same_col',orderable: false, searchable: false,visible:true }   
           
         ],
                 
         createdRow: function( row, data, dataIndex ) {
         // Set the data-status attribute, and add a class 
-        $( row ).find('td:eq(5)')
+        $( row ).find('td:eq(8)')
             .attr('data-price', data.id );
-            $( row ).find('td:eq(5)')
+            
+            $( row ).find('td:eq(8)')
             .attr('id',"item_id_"+data.id );
-            $( row ).find('td:eq(5)')
+            $( row ).find('td:eq(8)')
             .attr('data-user', data.user_id );
             $( row ).find('td:eq(1)')
             .attr('id',"all_items_id");
+            @hasrole('vendor')
+            var val = $( row ).find('td:eq(9)').text();
+            if (val > 0) {
+                $('td', row).css('background-color', '#90EE90');
+            }
+            @endhasrole
+            @hasrole('admin')
+            var val = $( row ).find('td:eq(13)').text();
+            if (val > 0) {
+                $('td', row).css('background-color', '#90EE90');
+            }
+            @endhasrole
+            
     }
 });
 
 
-
+// function getImg(data, type, full, meta) {
+//         var orderType = data.OrderType;
+//         //alert(data);
+//         if (data > 0)  {
+//             table.row( this ).css('background-color', 'Red');
+//        } 
+//     }
 
     $('#user_id').on("change",function(){
         var user_id = $(this).val();
@@ -196,8 +232,10 @@ var table =  $('#mytable').DataTable({
        
         "columnDefs": [
            
-        { "class": "item_price" ,"targets": 5, 'createdCell':  function (td, cellData, rowData, row, col) {
+        { "class": "item_price" ,"targets": 8, 'createdCell':  function (td, cellData, rowData, row, col) {
+        @hasrole('admin')
            $(td).attr('contenteditable', 'true'); 
+        @endhasrole
            
          
  
@@ -207,17 +245,7 @@ var table =  $('#mytable').DataTable({
             $('td .item_price').attr('id', cellData);
         }},
        
-        // {
-        //     'targets': 1,
-        // 		'createdCell':  function (td, cellData, rowData, row, col) {
-        //             //var a = $(td).attr('id', cellData); 
-        //                var a = $("tr td").find('.item_price').css( "background-color", "red" );
-        //               // alert(a);
-        //                //console.log(cellData);
-        //              //  $(td).('#mytable td:eq(6)').data('price', 52);
-
-        //         }
-        // }   
+    
         
     ],
    
@@ -227,16 +255,19 @@ var table =  $('#mytable').DataTable({
             { "data": "item_code" },
             {"data": "item_name" },
             { "data": "item_numbers" },
-            { "data": "price" },
             { "data": "item_make"},
             { "data": "item_model" },
             { "data": "item_year" },
-            { "data": "item_note" },
+            @hasrole('admin')
+            { "data": "price" },
+            // { "data": "item_note" },
             { "data": "platinum_percentage","name":"platinum_percentage" },
             { "data": "pladium_percentage" },
-            { "data": "rhodium_percentage" },      
-            {data: 'action', name: 'action', orderable: false, searchable: false}
-          
+            { "data": "rhodium_percentage" },     
+            @endhasrole 
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+            { data:'same_col',name:'same_col',orderable: false, searchable: false,visible:true },
+
         ],
                 
      
@@ -259,16 +290,30 @@ var table =  $('#mytable').DataTable({
     // }
     createdRow: function( row, data, dataIndex ) {
         // Set the data-status attribute, and add a class 
-        $( row ).find('td:eq(5)')
+        $( row ).find('td:eq(8)')
             .attr('data-price', data.id );
-            $( row ).find('td:eq(5)')
+            // alert($( row ).find('td:eq(15)').val());
+            $( row ).find('td:eq(8)')
             .attr('id',"item_id_"+data.id );
-            $( row ).find('td:eq(5)')
+            $( row ).find('td:eq(8)')
             .attr('data-user', data.user_id );
             $( row ).find('td:eq(1)')
             .attr('data-item-id', data.id );
             $( row ).find('td:eq(1)')
             .attr('id',"all_items_id");
+            @hasrole('vendor')
+            var val = $( row ).find('td:eq(9)').text();
+            if (val > 0) {
+                $('td', row).css('background-color', '#90EE90');
+            }
+            @endhasrole
+
+            @hasrole('admin')
+            var val = $( row ).find('td:eq(13)').text();
+            if (val > 0) {
+                $('td', row).css('background-color', '#90EE90');
+            }
+            @endhasrole
           
     }
     
@@ -524,7 +569,19 @@ $('#mytable').on('click', '.checkedbox',function() {
                           },
                       success:function(data){
                         console.log(data);
-                        console.log("success");
+                        if (data == 1) {
+                            Swal.fire({
+                                title:'Congratulations!',
+                                text:'Price has updated successfully',
+                                type: 'success',
+                              })
+                        }else{
+                            Swal.fire({
+                                title:'OOPSS!',
+                                text:'Something went wrong',
+                                type: 'warning',
+                              })
+                        }
                       
                       }
         });
@@ -552,7 +609,19 @@ $('#mytable').on('click', '.checkedbox',function() {
                     user_id:user_id,
                 },
                 success:function(data){
-                    console.log(data);
+                    if (data == 1) {
+                        Swal.fire({
+                                title:'Congratulations!',
+                                text:'Percentage has been added successfully',
+                                type: 'success',
+                              })
+                    }else{
+                        Swal.fire({
+                                title:'OOPSS!',
+                                text:'Something went wrong',
+                                type: 'warning',
+                              })
+                    }
                 },
          });
         });
