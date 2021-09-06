@@ -9,13 +9,13 @@
 @endsection
 
 @section('headername')
-
+    @hasrole('admin')
     <a href="{{ url('create_item') }}" style="float: right" class="btn btn-md btn-primary">+ Add Item</a>
 
-    <a href="/metal_price" target="_blank" style="float: right; margin-right:0.1%" class="btn btn-md btn-success">Metal Price</a>
-    <div class="container-fluid" >
+<!--     <a href="/metal_price" target="_blank" style="float: right; margin-right:0.1%" class="btn btn-md btn-success">Metal Price</a>
+ -->    <div class="container-fluid " >
         <form class="form-inline"  id="inline_form" style="float: right;margin-right:0.1%">
-            <label for="" style="font-size: 25px;">Update Price by %</label>&nbsp;&nbsp;
+            <label for="" style="font-size: 15px;">Update Price by %</label>&nbsp;&nbsp;
             <input type="number" id="percentage" max="100" min="0" name="percentage" class="form-control col-2" required>&nbsp;&nbsp;
 
             {{-- <label for="">Pladium</label>&nbsp;&nbsp;
@@ -25,6 +25,7 @@
             <button  class="btn btn-success btn-md" id="update_prices">Price update</button>
           </form>
     </div>
+    @endhasrole
     Items
 @endsection
 
@@ -41,10 +42,10 @@
        
         <div class="card-body">
             <br>
-           
+        @hasrole('admin')
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-3 col-lg-2 col-sm-2 col-3">
+                    <div class="col-md-3 col-lg-2 col-sm-6 col-6">
                         <label for=""></label>
                         <select name="user_id" id="user_id" class="form-control">
                             <option value="All">All User</option>
@@ -58,12 +59,17 @@
                     </div>
                 </div>
             </div>
+            @endhasrole
                <br>
+            <div class="container-fluid">
             <div class="table-responsive">
                 <table class="table" id="mytable" style="width: 100%">
                     <thead>
-                        <tr>		
-                            <th><input type="checkbox" name="checkAll" id="selectAll" value=""></th>	
+                        <tr>	
+                            @hasrole('admin')
+                                <th><input type="checkbox" name="checkAll" id="selectAll" value=""></th>    
+
+                            @endhasrole	
                             <th>ID</th>								
                             <th>Code</th>
                             <th>Name</th>
@@ -93,6 +99,7 @@
 
                   
             </div>
+        </div>
         </div>
    
     <!-- /Feed Activity -->
@@ -149,12 +156,17 @@ var table =  $('#mytable').DataTable({
         @hasrole('admin')
            $(td).attr('contenteditable', 'true'); 
         @endhasrole
+        @hasrole('vendor')
+           $(td).css('display', 'none'); 
+        @endhasrole
         }
         },    
 
     ],
         "columns":[
-            {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+            @hasrole('admin')
+                 {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+            @endhasrole
             { "data": "id" },
             { "data": "item_code" },
             {"data": "item_name" },
@@ -172,7 +184,7 @@ var table =  $('#mytable').DataTable({
             @endhasrole   
             {data: 'action', name: 'action', orderable: false, searchable: false},
 
-             { data:'same_col',name:'same_col',orderable: false, searchable: false,visible:true }   
+             { data:'same_col',name:'same_col',orderable: false, searchable: false }   
           
         ],
                 
@@ -187,12 +199,7 @@ var table =  $('#mytable').DataTable({
             .attr('data-user', data.user_id );
             $( row ).find('td:eq(1)')
             .attr('id',"all_items_id");
-            @hasrole('vendor')
-            var val = $( row ).find('td:eq(9)').text();
-            if (val > 0) {
-                $('td', row).css('background-color', '#90EE90');
-            }
-            @endhasrole
+           
             @hasrole('admin')
             var val = $( row ).find('td:eq(13)').text();
             if (val > 0) {
@@ -301,12 +308,7 @@ var table =  $('#mytable').DataTable({
             .attr('data-item-id', data.id );
             $( row ).find('td:eq(1)')
             .attr('id',"all_items_id");
-            @hasrole('vendor')
-            var val = $( row ).find('td:eq(9)').text();
-            if (val > 0) {
-                $('td', row).css('background-color', '#90EE90');
-            }
-            @endhasrole
+           
 
             @hasrole('admin')
             var val = $( row ).find('td:eq(13)').text();
@@ -550,7 +552,7 @@ $('#mytable').on('click', '.checkedbox',function() {
         $('#mytable').on('focusout', '.item_price', function (){
             var item_ids = $(this).data("price");
             var val = $("#item_id_"+item_ids).text();
-           // alert(val);
+        // alert(val);
             var user_price_value = $.trim(val);
            // alert(price_val);
             var user_id = $(this).data("user");

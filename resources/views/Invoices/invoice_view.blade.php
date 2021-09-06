@@ -115,7 +115,7 @@
                                             {{-- <td class="text-right">$10.99</td> --}}
                                         </tr>
                                         @endforeach
-                                        <tr>
+                                        <!-- <tr>
                                             <td class="thick-line"></td>
                                             <td class="thick-line"></td>
                                             <td class="thick-line"></td>
@@ -130,16 +130,16 @@
                                             <td class="text-center">$10.99</td>
                                             <td class="text-center">1</td>
                                             <td class="text-right">$10.99</td> --}}
-                                        </tr>
-                                        <tr>
+                                        </tr> -->
+                                       <!--  <tr>
                                             <td class="no-line"></td>
                                             <td class="no-line"></td>
                                             <td class="no-line"></td>
                                             <td class="no-line"></td>
                                             <td class="no-line text-center"><strong>Total</strong></td>
-                                            <td class="no-line text-right">$685.99</td>
-                                            <td class="no-line text-right">$685.99</td>
-                                        </tr>
+                                            <td class="no-line text-right"></td>
+                                            <td class="no-line text-right"></td>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -155,7 +155,7 @@
         
                 <div id="signature-pad" class="m-signature-pad">
                     <div class="m-signature-pad--body">
-                      <canvas style="border: 2px dashed #ccc"></canvas>
+                      <canvas style="border: 2px dashed #ccc" class="col-lg-12 col-md-12 col-xs-8 col-8"></canvas>
                       <textarea class="form-control" name="signature" id="signature" rows="3" hidden></textarea>
                      
                     </div>
@@ -163,7 +163,7 @@
                     <div class="m-signature-pad--footer">
                       <button type="button" class="btn btn-sm btn-secondary" data-action="clear">Clear</button>
                       <br><br>
-                      <div class="col-2 col-lg-3 col-md-3" style="margin-left: -1%">
+                      <div class="col-6 col-lg-3 col-md-3" style="margin-left: -1%">
                         <button type="submit" class="btn btn-md btn-success btn-block" data-action="save" id="save">Save Signatures</button>
                     </div>
                     </div>
@@ -171,7 +171,7 @@
                   
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-3 col-lg-4 col-sm-3 col-3">
+                        <div class="col-md-3 col-lg-4 col-sm-3 col-6">
                         </div>
                     </div>
                 </div>

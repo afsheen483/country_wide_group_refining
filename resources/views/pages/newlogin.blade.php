@@ -18,6 +18,7 @@
 		
 		<!-- Main CSS -->
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+        <link rel="manifest" href="{{ asset('/manifest.json') }}">
 		
 		<!--[if lt IE 9]>
 			<script src="assets/js/html5shiv.min.js"></script>
@@ -106,8 +107,14 @@
 		
 		<!-- Custom JS -->
 		<script src="{{ asset('assets/js/script.js') }}"></script>
-		
+		<script src="{{ asset('/sw.js') }}"></script>
     </body>
-
+<script>
+    if (!navigator.serviceWorker.controller) {
+        navigator.serviceWorker.register("/sw.js").then(function (reg) {
+            console.log("Service worker has been registered for scope: " + reg.scope);
+        });
+    }
+</script>
 <!-- Mirrored from doccure-html.dreamguystech.com/template/admin/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 17 Nov 2020 04:05:11 GMT -->
 </html>

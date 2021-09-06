@@ -16,6 +16,7 @@
         
 
 <div class="row">
+    @hasrole('admin')
     <div class="col-xl-3 col-sm-6 col-12">
         <a href="/ajaxdata">
             <div class="card">
@@ -37,6 +38,7 @@
                 </div>
              </a>
         </div>
+        @endhasrole
     </div>
 
     <div class="col-xl-3 col-sm-6 col-12">
@@ -62,6 +64,7 @@
            </a>
         </div>
     </div>
+    @hasrole('admin')
     <div class="col-xl-3 col-sm-6 col-12">
         <div class="card">
             <div class="card-body">
@@ -129,6 +132,7 @@
            </a>
         </div>
     </div>
+    @endhasrole
 </div>
 @endsection
 

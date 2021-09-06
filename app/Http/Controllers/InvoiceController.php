@@ -145,7 +145,7 @@ class InvoiceController extends Controller
             CONCAT(u.first_name,' ',u.last_name) AS vendor_name
         FROM
             invoice_head inh
-         JOIN users u ON u.id = inh.vendor_id 
+        LEFT JOIN users u ON u.id = inh.vendor_id 
         WHERE
             inh.is_deleted = 0
          ORDER BY

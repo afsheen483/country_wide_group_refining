@@ -20,6 +20,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/feathericon.min.css') }}">
 		
 		<link rel="stylesheet" href="{{ asset('assets/plugins/morris/morris.css') }}">
+		<link rel="manifest" href="{{ asset('/manifest.json') }}">
 		
 		<!-- Main CSS -->
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -143,6 +144,7 @@
 							<li> 
 								<a href="/itemdata"><i class="fa fa-list-alt" aria-hidden="true"></i> <span>Items</span></a>
 							</li>
+							@hasrole('admin')
 							<li> 
 								<a href="/invoice"><i class="far fa-file-invoice"></i> <span>Invoices</span></a>
 							</li>
@@ -158,6 +160,7 @@
 									<li><a href="/permissions">Permissions</a></li>
 								</ul>
 							</li>
+							@endhasrole
 							<li>
 						
 								<a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
@@ -230,7 +233,8 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	
+	<script src="{{ asset('/sw.js') }}"></script>
+
 	@yield('scripts')
 
 
@@ -247,6 +251,12 @@
         }).parent().addClass('active').parent().parent().addClass('active');
 
         });
+
+		   if (!navigator.serviceWorker.controller) {
+        navigator.serviceWorker.register("/sw.js").then(function (reg) {
+            console.log("Service worker has been registered for scope: " + reg.scope);
+        });
+    }
 	</script>
 <!-- Mirrored from doccure-html.dreamguystech.com/template/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 17 Nov 2020 04:02:56 GMT -->
 </html>

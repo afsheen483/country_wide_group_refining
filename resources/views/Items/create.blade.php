@@ -19,10 +19,31 @@
                 {{ 'No error' }}
             @endif
         </p> --}}
-        <a href="{{ url('itemdata') }}" class="btn btn-primary" style="float: right">Back</a>
+        <a href="{{ url('itemdata') }}" class="btn btn-success" style="float: right">Back</a>
         <h1><i class='fa fa-plus'></i> Add Item</h1>
         <hr>
 
+
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-6">
+               
+            </div>
+            <br>
+            <div class="col-lg-12 col-md-6 col-xs-6 col-6">
+               <form action="{{ route('file-import') }}" method="POST" enctype="multipart/form-data" id="bulk_form" class="form-inline" style="margin-left:20%;">
+                    @csrf
+                    
+                    <h4>Bulk File Upload:</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" name="file" required>
+                            {{-- <label class="custom-file-label" for="customFile">Choose file</label> --}}
+                       
+                    <button class="btn btn-info">Import data</button>
+                    {{-- <a class="btn btn-success" href="{{ route('file-export') }}">Export data</a> --}}
+                </form>
+            </div>
+        </div>
+        <hr>
+        <br><br>
         <div style="margin-left: 20%">
             {{ Form::open(['action' => 'ItemController@store', 'method' => 'POST','files'=>'true']) }}
 
@@ -98,20 +119,12 @@
 
 
 
-            {{ Form::submit('Add Item', ['class' => 'btn btn-primary']) }}
+            {{ Form::submit('Save Item', ['class' => 'btn btn-info']) }}
 
             {{ Form::close() }}
-            <button type="button" class="btn btn-success" style="margin-left:7%;margin-top:-4.1%;" id="bulk_file">Bulk File</button>
+            {{-- <button type="button" class="btn btn-success" style="margin-left:7%;margin-top:-4.1%;" id="bulk_file">Bulk File</button> --}}
             <div class="col-4 col-lg-4 col-md-4" style="margin-left: 15%;margin-top:-3.8%">
-            <form action="{{ route('file-import') }}" method="POST" enctype="multipart/form-data" id="bulk_form" class="form-inline" style="display: none">
-                @csrf
-                
-                        <input type="file" name="file" >
-                        {{-- <label class="custom-file-label" for="customFile">Choose file</label> --}}
-                   
-                <button class="btn btn-primary">Import data</button>
-                {{-- <a class="btn btn-success" href="{{ route('file-export') }}">Export data</a> --}}
-            </form>
+           
             </div>
         </div>
 

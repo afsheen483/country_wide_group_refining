@@ -127,10 +127,15 @@ class ItemController extends Controller
                     ORDER BY
                     i.id DESC");
                 return Datatables::of($items)->addColumn('action', function ($id) {
+                    if(Auth::user()->hasRole('admin'))
+
                     return '<a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
                         <a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
+                        
                         <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
-                      '; })->editColumn('select_items', function ($row) {
+                      '; if(Auth::user()->hasRole('vendor'))
+                      return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a>';
+                    })->editColumn('select_items', function ($row) {
                         return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
                     })->editColumn('platinum_percentage', function ($item) {
                         return $item->platinum_percentage;
