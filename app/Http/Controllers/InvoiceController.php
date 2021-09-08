@@ -48,15 +48,15 @@ class InvoiceController extends Controller
     //     $image_base64->move('upload',$signature);
     $date = date("Y-m-d");
     $user_id = Auth::user()->id;
-    $signatureUri = str_replace('data:image/png;base64,', '', $request->signature);
+    // $signatureUri = str_replace('data:image/png;base64,', '', $request->signature);
  
-        $signature = str_replace(' ', '+', $signatureUri);
+    //     $signature = str_replace(' ', '+', $signatureUri);
          
-        $signatureData = base64_decode($signature);
+    //     $signatureData = base64_decode($signature);
          
-        $fileName = strtotime(now()).'_signature.png';
+    //     $fileName = strtotime(now()).'_signature.png';
          
-        $sig_file = file_put_contents(public_path('upload/').$fileName, $signatureData);
+    //     $sig_file = file_put_contents(public_path('upload/').$fileName, $signatureData);
          
         //$message = 'Signature Stored Successfully. <a target="_blank" href="signatures/'.$fileName.'">View Signature</a>';
             //dd($file);
