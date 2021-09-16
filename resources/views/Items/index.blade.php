@@ -68,7 +68,6 @@
                         <tr>	
                             @hasrole('admin')
                                 <th><input type="checkbox" name="checkAll" id="selectAll" value=""></th>    
-
                             @endhasrole	
                             <th>ID</th>								
                             <th>Code</th>
@@ -79,8 +78,6 @@
                             <th>Year</th>
                             @hasrole('admin')
                             <th>Price($)</th>
-<!--                             <th>Note</th>
- -->                        
                             <th>Platinum <br>
                                 Percentage</th>
                                 <th>Pladium <br>
@@ -163,10 +160,8 @@ var table =  $('#mytable').DataTable({
         },    
 
     ],
-        "columns":[
-            @hasrole('admin')
-                 {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
-            @endhasrole
+    "columns":[
+            {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
             { "data": "id" },
             { "data": "item_code" },
             {"data": "item_name" },
@@ -176,16 +171,13 @@ var table =  $('#mytable').DataTable({
             { "data": "item_year" },
             @hasrole('admin')
             { "data": "price" },
-            // { "data": "item_note" },
-            
-            { "data": "platinum_percentage","name":"platinum_percentage" },
+            { "data": "platinum_percentage"},
             { "data": "pladium_percentage" },
-            { "data": "rhodium_percentage" },   
-            @endhasrole   
+            { "data": "rhodium_percentage" },     
+            @endhasrole
             {data: 'action', name: 'action', orderable: false, searchable: false},
+            { data:'same_col',name:'same_col',orderable: false, searchable: false,visible:true },
 
-             { data:'same_col',name:'same_col',orderable: false, searchable: false }   
-          
         ],
                 
         createdRow: function( row, data, dataIndex ) {
@@ -267,7 +259,6 @@ var table =  $('#mytable').DataTable({
             { "data": "item_year" },
             @hasrole('admin')
             { "data": "price" },
-            // { "data": "item_note" },
             { "data": "platinum_percentage","name":"platinum_percentage" },
             { "data": "pladium_percentage" },
             { "data": "rhodium_percentage" },     

@@ -57,7 +57,7 @@ Route::get('/roles_edit/{id}', 'RoleController@edit')->middleware('auth');
 Route::get('/users_edit/{id}', 'UserController@edit')->middleware('auth');
 Route::get('dashboard', 'AdminController@index')->middleware('auth');
 
-
+Route::delete('/user_delete/{delete_id}','UserController@destroy');
 
 
 // active status

@@ -96,7 +96,7 @@
 
 
 
-            {{ Form::submit('Add Item', ['class' => 'btn btn-primary']) }}
+            {{ Form::submit('Edit Item', ['class' => 'btn btn-primary']) }}
 
         </form>
     </div>

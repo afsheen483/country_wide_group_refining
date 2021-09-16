@@ -132,7 +132,52 @@ $(document).ready(function() {
                
         });
 
- 
+        $('#mytable').on('click', '.delete_btn', function () {
+          var delete_id = $(this).data("delete");
+          var th=$(this);
+          console.log(delete_id);
+          var url = "{{url('user_delete')}}/"+delete_id;
+          Swal.fire({
+							  title: 'Are you sure?',
+							  text: "You won't be able to revert this!",
+							  type: 'warning',
+							  showCancelButton: true,
+							  confirmButtonColor: '#3085d6',
+							  cancelButtonColor: '#d33',
+							  confirmButtonText: 'Yes, delete it!'
+							}).then(function(result){
+                if (result.isConfirmed)  
+                  {
+                      $.ajax({
+                      
+                        url : url,
+                        type : 'DELETE',
+                        cache: false,
+                        data: {_token:'{{ csrf_token() }}'},
+                        success:function(data){
+                         if (data == 1) {
+                          Swal.fire({
+                                title:'Deleted!',
+                                text:'Your file and data has been deleted.',
+                                type: 'success',
+                              })
+                              th.parents('tr').hide();
+
+                            }
+                          else{
+                                Swal.fire({
+                                    title: 'Oopps!',
+                                    text: "something went wrong!",
+                                    type: 'warning',
+                          			})
+                          		}
+                         }
+                        
+                        });
+                }
+              });
+               
+        });
 });
            
     </script>

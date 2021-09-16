@@ -30,7 +30,7 @@
                             <th>Item Name</th>
                             <th>User Name</th>
                             <th>Search Date</th>
-                            <th>Action</th>
+                            {{-- <th>Action</th> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -75,7 +75,7 @@
             {"data": "item_name" },
             { "data": "name" },
             { "data": "date" },
-            {data: 'action', name: 'action', orderable: false, searchable: false}
+            // {data: 'action', name: 'action', orderable: false, searchable: false}
 
            
         ],

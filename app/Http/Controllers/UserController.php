@@ -256,7 +256,10 @@ class UserController extends Controller {
     //Find a user with a given id and delete
        try {
         $user = User::findOrFail($id); 
-        $user->delete();
+       $del = $user->delete();
+       if($del){
+           return 1;
+       }
        } catch (\Exception $e) {
            //throw $th;
             // return $e->getMessage();

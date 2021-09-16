@@ -178,7 +178,7 @@
                                     <td class="text-center">1</td>
                                     <td class="text-right">$10.99</td> --}}
                                         </tr>
-                                        <tr>
+                                        {{-- <tr>
                                             <td class="no-line"></td>
                                             <td class="no-line"></td>
                                             <td class="no-line"></td>
@@ -186,7 +186,7 @@
                                             <td class="no-line text-center"><strong>Total</strong></td>
                                             <td class="no-line text-right">$685.99</td>
                                             <td class="no-line text-right">$685.99</td>
-                                        </tr>
+                                        </tr> --}}
                                     </tbody>
                                 </table>
                             </div>

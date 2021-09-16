@@ -63,6 +63,41 @@ class ItemController extends Controller
                         return $item->platinum_percentage;
                  })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true); 
             }
+            else{
+                
+                $items = DB::select("SELECT
+                i.id,
+                i.item_code,
+                i.item_name,
+                i.item_numbers,
+                i.item_make,
+                i.item_model,
+                i.item_year,
+                i.item_note,
+                i.metals,
+                i.weight,
+                i.item_image,
+                CONVERT(i.price,decimal(10,2)) AS price,
+                CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
+                CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
+                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
+                (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
+            FROM
+                items i
+            WHERE
+                i.is_deleted = 0
+             ORDER BY
+             i.id DESC");
+                return Datatables::of($items)->addColumn('action', function ($id) {
+                    return '<a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
+                        <a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
+                        <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
+                      '; })->editColumn('select_items', function ($row) {
+                        return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
+                    })->editColumn('platinum_percentage', function ($item) {
+                        return $item->platinum_percentage;
+                 })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true); 
+            }
             if ($request->user_id > 0) {
                 $items = DB::select("SELECT
                 i.id,
@@ -102,44 +137,6 @@ class ItemController extends Controller
                     })->editColumn('platinum_percentage', function ($item) {
                         return $item->platinum_percentage;
                  })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true);
-            }else{
-                $items = DB::select("SELECT
-                        i.id,
-                        i.item_code,
-                        i.item_name,
-                        i.item_numbers,
-                        i.item_make,
-                        i.item_model,
-                        i.item_year,
-                        i.item_note,
-                        i.metals,
-                        i.weight,
-                        i.item_image,
-                        CONVERT(i.price,decimal(10,2)) AS price,
-                        CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
-                        CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
-                        CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
-                        (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
-                    FROM
-                        items i
-                    WHERE
-                        i.is_deleted = 0
-                    ORDER BY
-                    i.id DESC");
-                return Datatables::of($items)->addColumn('action', function ($id) {
-                    if(Auth::user()->hasRole('admin'))
-
-                    return '<a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
-                        <a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
-                        
-                        <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
-                      '; if(Auth::user()->hasRole('vendor'))
-                      return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a>';
-                    })->editColumn('select_items', function ($row) {
-                        return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
-                    })->editColumn('platinum_percentage', function ($item) {
-                        return $item->platinum_percentage;
-                 })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true); 
             }
            
          } catch (\Throwable $th) {
