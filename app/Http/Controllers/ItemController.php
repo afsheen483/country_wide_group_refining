@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\ItemModel;
+use App\Models\ImageModel;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
 use DataTables;
@@ -29,7 +30,10 @@ class ItemController extends Controller
         //dd($request->user_id);
         try {
             //$users = User::all();
+            //dd($request->user_id);
             if ($request->user_id == 'All') {
+
+               // dd($request->user_id);
                 $items = DB::select("SELECT
                 i.id,
                 i.item_code,
@@ -54,51 +58,26 @@ class ItemController extends Controller
              ORDER BY
              i.id DESC");
                 return Datatables::of($items)->addColumn('action', function ($id) {
-                    return '<a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
-                        <a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
+                    if(Auth::user()->hasRole('admin'))
+
+                    return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;"><i class="fa fa-eye"></i></a> |
+
+                    <a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
+                        
                         <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
-                      '; })->editColumn('select_items', function ($row) {
+                      '; if(Auth::user()->hasRole('vendor'))
+                      return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;"><i class="fa fa-eye"></i></a>';
+                    })->addColumn('item_name', function ($id) {
+                        return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: blue;cursor: pointer;">'.$id->item_name.'</a> 
+                          '; })->editColumn('select_items', function ($row) {
                         return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
                     })->editColumn('platinum_percentage', function ($item) {
                         return $item->platinum_percentage;
-                 })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true); 
+                 })->rawColumns(['action', 'select_items','platinum_percentage','item_name'])->make(true); 
             }
-            else{
-                
-                $items = DB::select("SELECT
-                i.id,
-                i.item_code,
-                i.item_name,
-                i.item_numbers,
-                i.item_make,
-                i.item_model,
-                i.item_year,
-                i.item_note,
-                i.metals,
-                i.weight,
-                i.item_image,
-                CONVERT(i.price,decimal(10,2)) AS price,
-                CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
-                CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
-                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
-                (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
-            FROM
-                items i
-            WHERE
-                i.is_deleted = 0
-             ORDER BY
-             i.id DESC");
-                return Datatables::of($items)->addColumn('action', function ($id) {
-                    return '<a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
-                        <a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
-                        <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
-                      '; })->editColumn('select_items', function ($row) {
-                        return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
-                    })->editColumn('platinum_percentage', function ($item) {
-                        return $item->platinum_percentage;
-                 })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true); 
-            }
+       
             if ($request->user_id > 0) {
+                //dd($request->user_id);
                 $items = DB::select("SELECT
                 i.id,
                 i.item_code,
@@ -129,14 +108,64 @@ class ItemController extends Controller
              ORDER BY
              i.id DESC");
                 return Datatables::of($items)->addColumn('action', function ($id) {
-                    return '<a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
-                        <a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fa fa-eye"></i></a> |
+                    if(Auth::user()->hasRole('admin'))
+
+                    return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;"><i class="fa fa-eye"></i></a> |
+
+                    <a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
+                        
                         <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
-                      '; })->editColumn('select_items', function ($row) {
+                      '; if(Auth::user()->hasRole('vendor'))
+                      return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;"><i class="fa fa-eye"></i></a>';
+                    })->addColumn('item_name', function ($id) {
+                        return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: blue;cursor: pointer;">'.$id->item_name.'</a> 
+                          '; })->editColumn('select_items', function ($row) {
                         return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
                     })->editColumn('platinum_percentage', function ($item) {
                         return $item->platinum_percentage;
-                 })->rawColumns(['action', 'select_items','platinum_percentage'])->make(true);
+                 })->rawColumns(['action', 'select_items','platinum_percentage','item_name'])->make(true);
+                
+            }else{
+                $items = DB::select("SELECT
+                i.id,
+                i.item_code,
+                i.item_name,
+                i.item_numbers,
+                i.item_make,
+                i.item_model,
+                i.item_year,
+                i.item_note,
+                i.metals,
+                i.weight,
+                i.item_image,
+                CONVERT(i.price,decimal(10,2)) AS price,
+                CONCAT(i.platinum_percentage, '%') AS platinum_percentage,
+                CONCAT(i.pladium_percentage, '%') AS pladium_percentage,
+                CONCAT(i.rhodium_percentage,'%') AS rhodium_percentage,
+                (SELECT COUNT(CASE WHEN i.id = v.item_id THEN 1 ELSE 0 END) FROM view_history v WHERE i.id = v.item_id) AS same_col
+            FROM
+                items i
+            WHERE
+                i.is_deleted = 0
+             ORDER BY
+             i.id DESC");
+                return Datatables::of($items)->addColumn('action', function ($id) {
+                    if(Auth::user()->hasRole('admin'))
+
+                    return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;"><i class="fa fa-eye"></i></a> |
+
+                    <a href="item_edit/ '. $id->id.'" style="color: blue;cursor: pointer;"><i class="fa fa-edit"></i></a> |
+                        
+                        <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a>
+                      '; if(Auth::user()->hasRole('vendor'))
+                      return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;"><i class="fa fa-eye"></i></a>';
+                    })->addColumn('item_name', function ($id) {
+                        return '<a href="view_item/ '. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: blue;cursor: pointer;">'.$id->item_name.'</a> 
+                          '; })->editColumn('select_items', function ($row) {
+                        return '<input type="checkbox" name="items[]" value="'.$row->id.'" data-checkbox="'.$row->id.'"  class="checkedbox"/>';
+                    })->editColumn('platinum_percentage', function ($item) {
+                        return $item->platinum_percentage;
+                 })->rawColumns(['action', 'select_items','platinum_percentage','item_name'])->make(true); 
             }
            
          } catch (\Throwable $th) {
@@ -163,15 +192,18 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         try {
-            
+           // dd($request->file('image'));
             $date = date("Y-m-d h:i:s");
+
+            $image_date = date("Y-m-d");
             $id = Auth::user()->id;
             $image=$request->file('image');
-            $file = $image->getClientOriginalName();
-            $base_path = 'upload/';
-            $image->move('upload',$file);
-            DB::table('items')->insert([
-                'item_image' => $base_path.$file,
+                            $file = $image->getClientOriginalName();
+                           // dd($file);
+                            $base_path = 'upload/';
+                            $image->move('upload',$file);
+           $item_id =  DB::table('items')->insert([
+               'item_image' => $base_path.$file,
                 'item_code' => $request->code,
                 'item_name' => $request->name,
                 'item_numbers' => $request->number,
@@ -187,8 +219,32 @@ class ItemController extends Controller
                 'created_at' => $date,
                 'is_deleted' => '0',
             ]);
+
+
+
+//             foreach($request->file('image') as $image)
+//             {
+//                 //dd($image);
+//                 //$image = array();
+//                 if ($request->file('image')->isValid())
+// {
+//     //
+
+//                 $image=$request->file('image');
+//                 $file = $image->getClientOriginalName();
+//                // dd($file);
+//                 $base_path = 'upload/';
+//                 $image->move('upload',$file);
+//                 ImageModel::create([
+//                     'item_id' => $item_id,
+//                     'image_url' => $base_path.$file,
+//                     'date' => $image_date,
+//                 ]);
+//             }
+//         }
             return redirect(route('itemdata'))->with('status', 'Item Added Succesfully');
-        } catch (\Throwable $th) {
+
+         }catch (\Throwable $th) {
             dd($th);
         }
     }
@@ -295,5 +351,18 @@ class ItemController extends Controller
            //throw $th;
            dd($th);
        }
+    }
+    public function CheckItemCode(Request $request)
+    {
+        try {
+            $item_code = $request->item_code;
+            $item_count = ItemModel::where('item_code',$item_code);
+            if ($item_count->count()) {
+               return 1;
+            }
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }

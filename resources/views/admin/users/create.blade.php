@@ -4,6 +4,18 @@
     .error{
         color: red;
     }
+    .required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
+h5:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
 </style>
 @section('title', '| Add User')
 
@@ -18,7 +30,7 @@
        <div style="margin-left: 20%">
         {{ Form::open(array('url' => 'users','id'=>'registration')) }}
     
-        <div class="row">
+        <div class="row required">
             <div class="form-group col-3">
                 {{ Form::label('firstname', 'FirstName') }}
                 {{ Form::text('first_name', '', array('class' => 'form-control','required' => '')) }}
@@ -29,7 +41,7 @@
             </div>
         </div>
         <div class='form-group'>
-                {{ Form::label('roles', 'Roles') }}
+                <h5><b>Give Role</b></h5>
                 <br>
             @foreach ($roles as $role)
                 {{ Form::checkbox('roles[]',  $role->id ) }}
@@ -37,7 +49,7 @@
     
             @endforeach
         </div>
-        <div style="margin-left: -1%">
+        <div style="margin-left: -1%" class="required">
             <div class="form-group col-6">
                 {{ Form::label('email', 'Username or Email') }}
                 {{ Form::text('email', '', array('class' => 'form-control email','required' => '','id'=> 'email')) }}
@@ -47,7 +59,7 @@
                 {{ Form::text('address', '', array('class' => 'form-control','required' => '')) }}
             </div>
         </div>
-        <div class="row">
+        <div class="row required">
             <div class="form-group col-3">
                 {{ Form::label('city', 'City') }}
                 {{ Form::text('city_name', '', array('class' => 'form-control','required' => '')) }}
@@ -57,7 +69,7 @@
                 {{ Form::text('province', '', array('class' => 'form-control','required' => '')) }}
             </div>
         </div>
-        <div class="row">
+        <div class="row required">
             <div class="form-group col-3">
                 {{ Form::label('postal_code', 'Postal Code') }}
                 {{ Form::text('postal_code', '', array('class' => 'form-control','required' => '')) }}
@@ -70,21 +82,21 @@
         </div>
        
     
-        <div style="margin-left: -1%">
+        <div style="margin-left: -1%" class="required">
             <div class="form-group col-6">
                 {{ Form::label('password', 'Password') }}<br>
                 {{ Form::password('password', array('class' => 'form-control','required' => '')) }}
         
             </div>
         
-            <div class="form-group col-6">
+            <div class="form-group col-6 required">
                 {{ Form::label('password', 'Confirm Password') }}<br>
                 {{ Form::password('password_confirmation', array('class' => 'form-control','required' => '')) }}
         
             </div>
         </div>
     
-        {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+        {{ Form::submit('Save', array('class' => 'btn btn-primary')) }}
     
         {{ Form::close() }}
        </div>

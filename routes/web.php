@@ -83,8 +83,10 @@ Route::post('/create_item', [ItemController::class, 'store'])->middleware('auth'
 Route::get('/item_edit/{id}', [ItemController::class, 'edit'])->middleware('auth');
 Route::get('/view_item/{id}', [ItemController::class, 'show'])->middleware('auth');
 Route::put('/item_update/{id}','ItemController@update')->middleware('auth');
+Route::post('/item_insert','ItemController@store')->middleware('auth');
 
 Route::put('/item_delete/{id}', [ItemController::class, 'destroy'])->middleware('auth');
+Route::post('/check_item_code', 'ItemController@CheckItemCode')->middleware('auth');
 
 // datatables
 Route::get('ajaxdata', 'UserController@index')->name('ajaxdata')->middleware('auth');
@@ -139,8 +141,11 @@ Route::get('invoice_view/{id}','InvoiceController@ViewInvoices')->middleware('au
 // invoice datatable
 Route::get('/invoice','InvoiceController@index')->name('invoice')->middleware("auth");
 Route::get('/invoice/getData','InvoiceController@getData')->name('invoice.getData')->middleware("auth");
+Route::put('/invoice_delete/{id}','InvoiceController@destroy')->middleware("auth");
 // signatures save of vendor
 Route::put('save_signature','InvoiceController@Signature')->middleware('auth');
+
+Route::get('signatures/{id}','InvoiceController@SignatureMobile')->middleware('auth');
 
 // bulk items
 Route::post('file-import', [ItemController::class, 'fileImport'])->name('file-import');

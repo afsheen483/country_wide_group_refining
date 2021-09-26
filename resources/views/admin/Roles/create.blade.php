@@ -3,7 +3,20 @@
 @section('title', '| Add Role')
 
 @section('content')
-
+<style>
+      .required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
+h5:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
+</style>
 <div class='col-lg-4 col-lg-offset-4'>
 
     <h1><i class='fa fa-key'></i> Add Role</h1>
@@ -11,7 +24,7 @@
 
     {{ Form::open(array('url' => 'roles')) }}
 
-    <div class="form-group">
+    <div class="form-group required">
         {{ Form::label('name', 'Name') }}
         {{ Form::text('name', null, array('class' => 'form-control')) }}
     </div>
@@ -26,7 +39,7 @@
         @endforeach
     </div>
 
-    {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+    {{ Form::submit('Save', array('class' => 'btn btn-primary')) }}
 
     {{ Form::close() }}
 

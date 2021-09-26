@@ -1,0 +1,13 @@
+Client - Name Contact CNIC Address Date Status Open Balance
+Vendor - Name Contact CNIC Address Date Status Open Balance
+
+Land- Name , Measurments , Location , Address , Amount , Description , Expense , Total Amount ,Date , Status UpdatedAt
+Plot  - Same as Land
+Files  - Same as Land
+Sale - Select Type Select Property Rate Add to List
+Client Id, Date , Description , Browse File , Sale Amount , Paid Amount, Witness 1 Name, Witness 2 Name, Witness 1 CNIC , Witness 2 CNIC , Status
+
+Purchase - Same as above
+
+Reports- New Cash In , New Cash Out , General Ledger , Client Ledger 
+Vendor Ledger , Income and Expense Report.

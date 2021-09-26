@@ -5,6 +5,18 @@
     .error{
         color: red;
     }
+    .required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
+h5:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
 </style>
 @section('title', '| Edit User')
 
@@ -17,7 +29,7 @@
  <div style="margin-left: 20%">
     {{ Form::model($user, array('route' => array('users.update', $user->id), 'method' => 'PUT','id' => 'registration')) }}{{-- Form model binding to automatically populate our fields with user data --}}
 
-    <div class="row">
+    <div class="row required">
         <div class="form-group col-3">
             {{ Form::label('firstname', 'FirstName') }}
             {{ Form::text('first_name',NULL, array('class' => 'form-control','required' => '')) }}
@@ -36,7 +48,7 @@
 
         @endforeach
     </div>
-    <div style="margin-left: -1%">
+    <div style="margin-left: -1%" class="required">
         <div class="form-group col-6">
             {{ Form::label('email', 'Username or Email') }}
             {{ Form::text('email',NULL, array('class' => 'form-control','required' => '','id'=> 'email')) }}
@@ -46,7 +58,7 @@
             {{ Form::text('address',NULL, array('class' => 'form-control','required' => '')) }}
         </div>
     </div>
-    <div class="row">
+    <div class="row required">
         <div class="form-group col-3">
             {{ Form::label('city', 'City') }}
             {{ Form::text('city_name',NULL, array('class' => 'form-control','required' => '')) }}
@@ -56,7 +68,7 @@
             {{ Form::text('province',NULL, array('class' => 'form-control','required' => '')) }}
         </div>
     </div>
-    <div class="row">
+    <div class="row required">
         <div class="form-group col-3">
             {{ Form::label('postal_code', 'Postal Code') }}
             {{ Form::text('postal_code',NULL, array('class' => 'form-control','required' => '')) }}
@@ -67,14 +79,14 @@
     
         </div>
     </div>
-    <div style="margin-left: -1%">
+    <div style="margin-left: -1%" class="">
         <div class="form-group  col-6">
             {{ Form::label('password', 'Password') }}<br>
             {{ Form::password('password', array('class' => 'form-control')) }}
 
         </div>
 
-        <div class="form-group  col-6">
+        <div class="form-group  col-6" >
             {{ Form::label('password', 'Confirm Password') }}<br>
             {{ Form::password('password_confirmation',array('class' => 'form-control')) }}
 

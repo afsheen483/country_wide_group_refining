@@ -1,19 +1,67 @@
 @extends('layouts.master')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">  
-{{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" /> --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
 {{-- <link rel="stylesheet" href="https://editor.datatables.net/extensions/Editor/css/editor.dataTables.min.css"> --}}
 
+{{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.7/css/responsive.dataTables.min.css"> --}}
+@if ($agent->isMobile())
+<style>
+    #mytable_length{
+        display: none;
+    }
+</style>
+@endif
+
+@if (auth::user()->role('vendor')  && $agent->isMobile())
+    <style>
+        .uni_id {
+            display: none;
+        }
+        .id{
+            display: none;
+        }
+        .sam{
+            display: none;
+        }
+        .item_price{
+            display: none;
+        }
+    </style>
+@endif
+@hasrole('vendor')
+    <style>
+        .uni_id {
+            display: none;
+        }
+        .id{
+            display: none;
+        }
+        .sam{
+            display: none;
+        }
+        .item_price{
+            display: none;
+        }
+    </style>
+@endhasrole
 @section('title')
     Items
 @endsection
 
+@if (!$agent->isMobile())
+
 @section('headername')
+
     @hasrole('admin')
     <a href="{{ url('create_item') }}" style="float: right" class="btn btn-md btn-primary">+ Add Item</a>
-
+    <select name="user_id" id="user_id" class="form-control col-1" style="float: right;margin-right:0.1%">
+        <option value="All">All User</option>
+        @foreach ($user_array as $user)
+            <option value="{{ $user->id }}">{{ $user->first_name }}{{ " " }}{{ $user->last_name }}</option>
+        @endforeach
+    </select>  
 <!--     <a href="/metal_price" target="_blank" style="float: right; margin-right:0.1%" class="btn btn-md btn-success">Metal Price</a>
- -->    <div class="container-fluid " >
+ -->   
         <form class="form-inline"  id="inline_form" style="float: right;margin-right:0.1%">
             <label for="" style="font-size: 15px;">Update Price by %</label>&nbsp;&nbsp;
             <input type="number" id="percentage" max="100" min="0" name="percentage" class="form-control col-2" required>&nbsp;&nbsp;
@@ -24,10 +72,13 @@
             <input type="text" id="rhodium" placeholder="Enter Rhodium Percentage...." name="rhodium_percentage" class="form-control">&nbsp;&nbsp; --}}
             <button  class="btn btn-success btn-md" id="update_prices">Price update</button>
           </form>
-    </div>
+
     @endhasrole
+
     Items
+    
 @endsection
+@endif
 
 @section('content')
     <form action="{{ url('invoice_generate') }}" target="_blank" method="get">
@@ -39,37 +90,20 @@
 						
     <!-- Feed Activity -->
     <div class="card  card-table flex-fill">
-       
+       <br>
         <div class="card-body">
-            <br>
-        @hasrole('admin')
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-3 col-lg-2 col-sm-6 col-6">
-                        <label for=""></label>
-                        <select name="user_id" id="user_id" class="form-control">
-                            <option value="All">All User</option>
-                            @foreach ($user_array as $user)
-                                <option value="{{ $user->id }}">{{ $user->first_name }}{{ " " }}{{ $user->last_name }}</option>
-                            @endforeach
-                        </select>    
-                    </div>
-                    <div class="col-md-3 col-lg-3 col-sm-2 col-3" style="margin-top: 0.5%">
-                            {{-- <button type="button" class="btn btn-md btn-success" id="update_percentage">Percentage</button> --}}
-                    </div>
-                </div>
-            </div>
-            @endhasrole
-               <br>
             <div class="container-fluid">
             <div class="table-responsive">
-                <table class="table" id="mytable" style="width: 100%">
+                <table class="table table-striped table-bordered dataTable display" id="mytable" style="width: 100%"  cellspacing="0">
                     <thead>
                         <tr>	
                             @hasrole('admin')
                                 <th><input type="checkbox" name="checkAll" id="selectAll" value=""></th>    
+                               
                             @endhasrole	
-                            <th>ID</th>								
+
+                            <th class="id">ID</th>
+                           								
                             <th>Code</th>
                             <th>Name</th>
                             <th>Number</th>
@@ -78,15 +112,17 @@
                             <th>Year</th>
                             @hasrole('admin')
                             <th>Price($)</th>
-                            <th>Platinum <br>
-                                Percentage</th>
-                                <th>Pladium <br>
-                                Percentage</th>
-                                <th>Rhodium <br>
-                                Percentage</th>
+<!--                             <th>Note</th>
+ -->                        
+                            <th>Platinum %</th>
+                                <th>Pladium %</th>
+                                <th>Rhodium %</th>
                             @endhasrole
                             <th>Action</th>
-                            <th></th>
+                            @if (auth::user()->role('admin'))
+                            <th class="sam"></th>
+                            @endif
+                        
                          
                         </tr>
                     </thead>
@@ -108,40 +144,27 @@
 @endsection
 
 @section('scripts')
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script> 
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- <script src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script> --}}
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
         $(document).ready(function() {
-//     $('#mytable tfoot th').each(function() {
-//     var title = $(this).text();
-//     $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-// //   });
-// "rowCallback": function( row, data, index ) {
-//        var d =  $( row )
-//             .attr('data-price');
-//             alert(d);
-//         if ( {data:"same_col"} > 0 )
-//        
-//         else
-//         {
-//             $('td', row).css('background-color', 'Orange');
-//         }
-//     },
-
+        
 
 var table =  $('#mytable').DataTable({
+    
         destroy: true,
         "scrollX": true,
         "ordering":false,
         "processing": true,
         "serverSide": true,
+        "lengthMenu": [ 50, 75, 100, "All"],
+       
         
         "ajax": {
             "url": "{{ route('itemdata.getdata') }}",
@@ -153,15 +176,15 @@ var table =  $('#mytable').DataTable({
         @hasrole('admin')
            $(td).attr('contenteditable', 'true'); 
         @endhasrole
-        @hasrole('vendor')
-           $(td).css('display', 'none'); 
-        @endhasrole
+       
         }
         },    
 
     ],
-    "columns":[
-            {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+        "columns":[
+            @hasrole('admin')
+                 {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+            @endhasrole
             { "data": "id" },
             { "data": "item_code" },
             {"data": "item_name" },
@@ -171,13 +194,16 @@ var table =  $('#mytable').DataTable({
             { "data": "item_year" },
             @hasrole('admin')
             { "data": "price" },
-            { "data": "platinum_percentage"},
+            // { "data": "item_note" },
+            
+            { "data": "platinum_percentage","name":"platinum_percentage" },
             { "data": "pladium_percentage" },
-            { "data": "rhodium_percentage" },     
-            @endhasrole
+            { "data": "rhodium_percentage" },   
+            @endhasrole   
             {data: 'action', name: 'action', orderable: false, searchable: false},
-            { data:'same_col',name:'same_col',orderable: false, searchable: false,visible:true },
 
+             { data:'same_col',name:'same_col',orderable: false, searchable: false } ,  
+          
         ],
                 
         createdRow: function( row, data, dataIndex ) {
@@ -191,6 +217,8 @@ var table =  $('#mytable').DataTable({
             .attr('data-user', data.user_id );
             $( row ).find('td:eq(1)')
             .attr('id',"all_items_id");
+            $( row ).find('td:eq(0)')
+            .attr('class',"uni_id");
            
             @hasrole('admin')
             var val = $( row ).find('td:eq(13)').text();
@@ -203,23 +231,16 @@ var table =  $('#mytable').DataTable({
 });
 
 
-// function getImg(data, type, full, meta) {
-//         var orderType = data.OrderType;
-//         //alert(data);
-//         if (data > 0)  {
-//             table.row( this ).css('background-color', 'Red');
-//        } 
-//     }
-
-    $('#user_id').on("change",function(){
+$('#user_id').on("change",function(){
         var user_id = $(this).val();
+        //alert(user_id);
     var table =  $('#mytable').DataTable({
         destroy: true,
         "scrollX": true,
         "ordering":false,
         "processing": true,
         "serverSide": true,
-        
+        "lengthMenu": [ 50, 75, 100, "All"],
         "ajax": {
             "url": "{{ route('itemdata.getdata') }}",
             "type": "GET",
@@ -249,7 +270,9 @@ var table =  $('#mytable').DataTable({
     ],
    
         "columns":[
-            {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+            @hasrole('admin')
+                 {data: 'select_items', name: 'select_items', orderable: false, searchable: false},
+            @endhasrole
             { "data": "id" },
             { "data": "item_code" },
             {"data": "item_name" },
@@ -259,6 +282,7 @@ var table =  $('#mytable').DataTable({
             { "data": "item_year" },
             @hasrole('admin')
             { "data": "price" },
+            // { "data": "item_note" },
             { "data": "platinum_percentage","name":"platinum_percentage" },
             { "data": "pladium_percentage" },
             { "data": "rhodium_percentage" },     
@@ -312,9 +336,9 @@ var table =  $('#mytable').DataTable({
     
     
 });
-var a = $("#myTable").attr('data-item-id');
-console.log("a"+a);
-     });
+});
+        
+
 
     // The cell that has been clicked will be editable
     
@@ -618,7 +642,7 @@ $('#mytable').on('click', '.checkedbox',function() {
                 },
          });
         });
-});
+        });
            
     
     </script>

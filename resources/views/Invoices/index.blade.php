@@ -21,6 +21,7 @@
                             <th>Invoice ID</th>
                             <th>Vendor Name</th>
                             <th>Invoice File</th>
+                            <th>Signature</th>
                             <th>Invoice Date</th>
                             <th>Action</th>
 
@@ -92,6 +93,11 @@
                     {
                         "data": "invoice_file"
                     },
+                   { data: 'vendor_signature', name: 'vendor_signature',
+                            render: function( data, type, full, meta ) {
+                                return "<img src=\"/" + data + "\" height=\"50\"/>";
+                            }
+                        },
                     {
                         "data": "invoice_date"
                     },

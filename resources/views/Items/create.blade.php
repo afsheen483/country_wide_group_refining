@@ -4,7 +4,12 @@
     .error {
         color: red;
     }
-
+    .required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
 </style>
 @section('title', 'Add Item')
 
@@ -37,7 +42,9 @@
                     <h4>Bulk File Upload:</h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="file" name="file" required>
                             {{-- <label class="custom-file-label" for="customFile">Choose file</label> --}}
                        
-                    <button class="btn btn-info">Import data</button>
+                    <button class="btn btn-info">Import data</button>&nbsp;&nbsp;
+                    <a href="{{ asset('upload/sample_file.xlsx') }}" class="btn btn-success" target="_blank">Sample File</a>
+
                     {{-- <a class="btn btn-success" href="{{ route('file-export') }}">Export data</a> --}}
                 </form>
             </div>
@@ -45,20 +52,21 @@
         <hr>
         <br><br>
         <div style="margin-left: 20%">
-            {{ Form::open(['action' => 'ItemController@store', 'method' => 'POST','files'=>'true']) }}
-
-            <div class="row">
+                <form action="{{ url('item_insert') }}" method="post"  enctype="multipart/form-data">
+                    @csrf
+            <div class="row required">
                 <div class="form-group col-3">
-                    {{ Form::label('code', 'ITEM CODE') }}
-                    {{ Form::text('code', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Code....']) }}
+                    {{ Form::label('code', 'Item code') }}
+                    {{ Form::text('code', '', ['class' => 'form-control item_code', 'required' => '','placeholder'=>'Enter item code']) }}
+                    <p class="error"></p>
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('name', 'Name') }}
-                    {{ Form::text('name', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter name....']) }}
+                    {{ Form::label('name', 'Item name') }}
+                    {{ Form::text('name', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item name']) }}
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('number', 'NUMBERS') }}
-                    {{ Form::text('number', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Number.... ']) }}
+                    {{ Form::label('number', 'Item number') }}
+                    {{ Form::text('number', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item number']) }}
                 </div>
             </div>
             {{-- <div class='form-group'>
@@ -70,58 +78,60 @@
 
                 @endforeach
             </div> --}}
-            <div class="row">
+            <div class="row required">
                
                 <div class="form-group col-3">
-                    {{ Form::label('make', 'MAKE') }}
-                    {{ Form::text('make', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Make....']) }}
+                    {{ Form::label('make', 'Item make') }}
+                    {{ Form::text('make', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item make']) }}
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('model', 'MODEL') }}
-                    {{ Form::text('model', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Model']) }}
+                    {{ Form::label('model', 'Item model') }}
+                    {{ Form::text('model', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item model']) }}
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('year', 'YEAR') }}
-                    {{ Form::text('year', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter year....']) }}
+                    {{ Form::label('year', 'Year') }}
+                    {{ Form::text('year', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item year']) }}
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-6">
-                    {{ Form::label('price', 'Price') }}
-                    {{ Form::text('price', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Price.....']) }}
+                <div class="form-group col-6 required">
+                    {{ Form::label('price', 'Price($)') }}
+                    {{ Form::text('price', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item price']) }}
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('img', 'Image') }}
-                    <input type="file" name="image" id="" required>
+                    <input type="file" name="image" id="">
                 </div>
             </div>
-            <div class="row">
+            <div class="row required">
                 <div class="form-group col-3">
                     {{ Form::label('platinum', 'Platinum %') }}
-                    {{ Form::text('platinum_percentage', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Platinum Percentage.....']) }}
+                    {{ Form::text('platinum_percentage', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter platinum percentage']) }}
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('pladium', 'Pladium %') }}
-                    {{ Form::text('pladium_percentage', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Pladium Percentage.....']) }}
+                    {{ Form::text('pladium_percentage', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter pladium percentage']) }}
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('rhodium', 'Rhodium %') }}
-                    {{ Form::text('rhodium_percentage', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Rhodium Percentage.....']) }}
+                    {{ Form::text('rhodium_percentage', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter rhodium percentage']) }}
                 </div>
             </div>
-            <div class="row">
+            <div class="row required">
                 <div class="form-group col-9">
-                    {{ Form::label('note', 'NOTE') }}
-                    {{ Form::textArea('note', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Description.....']) }}
+                    {{ Form::label('note', 'Note') }}
+                    {{ Form::textArea('note', '', ['class' => 'form-control', 'required' => '','placeholder'=>'Enter description','rows' => 5, 'cols' => 40]) }}
                 </div>
 
             </div>
 
 
-
-            {{ Form::submit('Save Item', ['class' => 'btn btn-info']) }}
+                <div style="float: right;margin-right:25%">
+                    {{ Form::submit('Save Item', ['class' => 'btn btn-info']) }}
+                    </div>
 
             {{ Form::close() }}
+            <br><br> <br><br>
             {{-- <button type="button" class="btn btn-success" style="margin-left:7%;margin-top:-4.1%;" id="bulk_file">Bulk File</button> --}}
             <div class="col-4 col-lg-4 col-md-4" style="margin-left: 15%;margin-top:-3.8%">
            
@@ -138,6 +148,29 @@
             $("#bulk_file").click(function(){
                 $("#bulk_form").toggle();
             });
+            $(".item_code").mouseleave(function(){
+                    var item_code = $(this).val();
+            var url = "{{url('check_item_code')}}";
+            $.ajax({
+                      
+                      url : url,
+                      type : 'POST',
+                      cache: false,
+                      data: {
+                          _token:'{{ csrf_token() }}',
+                          item_code : item_code,
+                          },
+                      success:function(data){
+                        console.log(data);
+                        if (data == 1) {
+                            $(".error").text("item code already exists!");
+                        }
+                        console.log("success");
+                      
+                      }
+        });
+            });
+            
         });
     </script> 
 @endsection

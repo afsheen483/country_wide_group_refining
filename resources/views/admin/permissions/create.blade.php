@@ -4,6 +4,20 @@
 @section('title', '| Create Permission')
 
 @section('content')
+<style>
+    .required label:after {
+  color: #e32;
+  content: ' *';
+  display:inline;
+  font-size: 20px;
+}
+h4:after {
+  color: #e32;
+  content: ' *';
+  display:inline;
+  font-size: 20px;
+}
+</style>
 
 <div class='col-lg-4 col-lg-offset-4'>
 
@@ -12,7 +26,7 @@
 
     {{ Form::open(array('url' => 'permissions')) }}
 
-    <div class="form-group">
+    <div class="form-group required">
         {{ Form::label('name', 'Name') }}
         {{ Form::text('name', '', array('class' => 'form-control')) }}
     </div><br>

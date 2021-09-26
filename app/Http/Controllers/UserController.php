@@ -192,7 +192,6 @@ class UserController extends Controller {
         //Validate name, email and password fields    
             $this->validate($request, [
                 'email'=>'required|unique:users,email,'.$id,
-                'password'=>'required|min:6|confirmed'
             ]);
             $input = $request->only(['email', 'first_name','last_name','address','city_name','province','postal_code','phone_num', 'password']); //Retreive the name, email and password fields
             $roles = $request['roles']; //Retreive all roles
@@ -232,18 +231,21 @@ class UserController extends Controller {
             else {
                 $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
             }
+            return redirect()->route('users.index')
+     ->with('flash_message',
+      'User successfully edited.');
            
        } catch (\Exception $e) {
            //throw $th;
-            // return $e->getMessage();
-                return view('errors.401')->with('msg', $e->getMessage());
+             return $e->getMessage();
+           // dd($e);
+                //return view('errors.401')->with('msg', $e->getMessage());
         }catch (\Throwable $ex) {
             // return $ex->getMessage();
             return view('errors.401')->with('msg', $ex->getMessage());
+            //dd($ex);
         }
-     return redirect()->route('users.index')
-     ->with('flash_message',
-      'User successfully edited.');
+     
     }
 
     /**

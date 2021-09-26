@@ -5,6 +5,12 @@
     .error {
         color: red;
     }
+    .required label:after {
+    color: #e32;
+    content: ' *';
+    display:inline;
+    font-size: 20px;
+}
 
 </style>
 @section('title', 'Edit Item')
@@ -24,18 +30,19 @@
             @csrf
             @method('PUT')
        
-            <div class="row">
+            <div class="row required">
                 <div class="form-group col-3">
-                    {{ Form::label('code', 'ITEM CODE') }}
-                    {{ Form::text('code',$item->item_code, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Code....']) }}
+                    {{ Form::label('code', 'Item code') }}
+                    {{ Form::text('code',$item->item_code, ['class' => 'form-control item_code', 'required' => '','placeholder'=>'Enter item code']) }}
+                    <p class="error"></p>
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('name', 'Name') }}
-                    {{ Form::text('name',$item->item_name, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter name....']) }}
+                    {{ Form::label('name', 'Item name') }}
+                    {{ Form::text('name',$item->item_name, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item name']) }}
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('number', 'NUMBERS') }}
-                    {{ Form::text('number',$item->item_numbers, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Number.... ']) }}
+                    {{ Form::label('number', 'Item number') }}
+                    {{ Form::text('number',$item->item_numbers, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item number']) }}
                 </div>
             </div>
             {{-- <div class='form-group'>
@@ -47,49 +54,49 @@
 
                 @endforeach
             </div> --}}
-            <div class="row">
+            <div class="row required">
                
                 <div class="form-group col-3">
-                    {{ Form::label('make', 'MAKE') }}
-                    {{ Form::text('make',$item->item_make, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Make....']) }}
+                    {{ Form::label('make', 'Item make') }}
+                    {{ Form::text('make',$item->item_make, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item make']) }}
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('model', 'MODEL') }}
-                    {{ Form::text('model',$item->item_model, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Model']) }}
+                    {{ Form::label('model', 'Item Model') }}
+                    {{ Form::text('model',$item->item_model, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item model']) }}
                 </div>
                 <div class="form-group col-3">
-                    {{ Form::label('year', 'YEAR') }}
-                    {{ Form::text('year',$item->item_year, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter year....']) }}
+                    {{ Form::label('year', 'Year') }}
+                    {{ Form::text('year',$item->item_year, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item year']) }}
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group col-6">
-                    {{ Form::label('price', 'Price') }}
-                    {{ Form::text('price',$item->price, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Price.....']) }}
+            <div class="row ">
+                <div class="form-group col-6 required">
+                    {{ Form::label('price', 'Price($)') }}
+                    {{ Form::text('price',$item->price, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter item price']) }}
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('img', 'Image') }}
-                    <input type="file" name="image" id="" required>
+                    <input type="file" name="image" id="">
                 </div>
             </div>
-            <div class="row">
+            <div class="row required">
                 <div class="form-group col-3">
                     {{ Form::label('platinum', 'Platinum %') }}
-                    {{ Form::text('platinum_percentage',$item->platinum_percentage, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Platinum Percentage.....']) }}
+                    {{ Form::text('platinum_percentage',$item->platinum_percentage, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter platinum percentage']) }}
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('pladium', 'Pladium %') }}
-                    {{ Form::text('pladium_percentage',$item->pladium_percentage, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Pladium Percentage.....']) }}
+                    {{ Form::text('pladium_percentage',$item->pladium_percentage, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter pladium percentage']) }}
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('rhodium', 'Rhodium %') }}
-                    {{ Form::text('rhodium_percentage',$item->rhodium_percentage, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Rhodium Percentage.....']) }}
+                    {{ Form::text('rhodium_percentage',$item->rhodium_percentage, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter rhodium percentage']) }}
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-9">
-                    {{ Form::label('note', 'NOTE') }}
-                    {{ Form::textArea('note',$item->item_note, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter Description.....']) }}
+                    {{ Form::label('note', 'Note') }}
+                    {{ Form::textArea('note',$item->item_note, ['class' => 'form-control', 'required' => '','placeholder'=>'Enter description','rows' => 5, 'cols' => 40]) }}
                 </div>
 
             </div>
@@ -99,6 +106,7 @@
             {{ Form::submit('Edit Item', ['class' => 'btn btn-primary']) }}
 
         </form>
+        <br><br><br><br>
     </div>
 
     </div>
@@ -144,5 +152,27 @@
         //         }
         //     }
         // });
+        $(".item_code").mouseleave(function(){
+                    var item_code = $(this).val();
+            var url = "{{url('check_item_code')}}";
+            $.ajax({
+                      
+                      url : url,
+                      type : 'POST',
+                      cache: false,
+                      data: {
+                          _token:'{{ csrf_token() }}',
+                          item_code : item_code,
+                          },
+                      success:function(data){
+                        console.log(data);
+                        if (data == 1) {
+                            $(".error").text("item code already exists!");
+                        }
+                        console.log("success");
+                      
+                      }
+        });
+            });
     </script>
 @endsection

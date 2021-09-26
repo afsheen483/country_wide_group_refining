@@ -13,6 +13,8 @@ class ViewedHistoryController extends Controller
     {
         try {
            // dd($request->all());
+           if (Auth::user()->hasRole('vendor')) {
+           
             $user_id = Auth::user()->id;
             $date = date("Y-m-d");
             ViewHistoryModel::create([
@@ -20,6 +22,7 @@ class ViewedHistoryController extends Controller
                 'item_id' => $request->view_id,
                 'date' => $date
             ]);
+        }
         } catch (\Throwable $th) {
             //throw $th;
             dd($th);
