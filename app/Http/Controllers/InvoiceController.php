@@ -158,11 +158,11 @@ class InvoiceController extends Controller
        // dd($items);
             return Datatables::of($items)->addColumn('action', function ($id) {
                 return '
-                    <a href="invoice_view/'. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fas fa-signature"></i></a> |
-                    <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a> |
-                    <a href="invoice_slip/'. $id->id.'" style="color: blue;cursor: pointer;" id="'.$id->id.'" data-invoice="'.$id->id.'" class="invoice_view" target="_blank"><i class="fas fa-file-invoice-dollar"></i></a>
+                    <a href="invoice_view/'. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fas fa-signature"></i></a>   
+                    <a href="invoice_slip/'. $id->id.'" style="color: blue;cursor: pointer;margin-left:6%;" id="'.$id->id.'" data-invoice="'.$id->id.'" class="invoice_view" target="_blank"><i class="fas fa-file-invoice-dollar"></i></a>
+                    <a  style="color: red;cursor: pointer;margin-left:6%;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a> 
                   '; })->addColumn('invoice_file', function ($row) {
-                    return '<a href='. $row->invoice_file.' style="color: blue;cursor: pointer;" target="_blank">'.$row->invoice_file.'</a> 
+                    return '<a href='. $row->invoice_file.' style="color: blue;cursor: pointer;" target="_blank">Downlaod File</a> 
                       
                       '; })->addColumn('status', function ($user) {
                         if ($user->is_completed == 1) return '<span class="btn btn-sm bg-success-light">Completed</span>';
@@ -188,11 +188,11 @@ class InvoiceController extends Controller
        // dd($items);
             return Datatables::of($items)->addColumn('action', function ($id) {
                 return '
-                    <a href="invoice_view/'. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fas fa-signature"></i></a> |
-                    <a  style="color: red;cursor: pointer;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a> |
-                    <a href="invoice_slip/'. $id->id.'" style="color: blue;cursor: pointer;" id="'.$id->id.'" data-invoice="'.$id->id.'" class="invoice_view" target="_blank"><i class="fas fa-file-invoice-dollar"></i></a>
+                    <a href="invoice_view/'. $id->id.'" data-view="'.$id->id.'" class="view_btn" style="color: green;cursor: pointer;" target="_blank"><i class="fas fa-signature"></i></a> 
+                    <a href="invoice_slip/'. $id->id.'" style="color: blue;cursor: pointer;margin-left:6%;" id="'.$id->id.'" data-invoice="'.$id->id.'" class="invoice_view" target="_blank"><i class="fas fa-file-invoice-dollar"></i></a>
+                    <a  style="color: red;cursor: pointer;margin-left:6%;" id="'.$id->id.'" data-delete="'.$id->id.'" class="delete_btn"><i class="fa fa-trash"></i></a> 
                   '; })->addColumn('invoice_file', function ($row) {
-                    return '<a href='. $row->invoice_file.' style="color: blue;cursor: pointer;" target="_blank">'.$row->invoice_file.'</a> 
+                    return '<a href='. $row->invoice_file.' style="color: blue;cursor: pointer;" target="_blank">Download File</a> 
                       
                       '; })->addColumn('status', function ($user) {
                         if ($user->is_completed == 1) return '<span class="btn btn-sm bg-success-light">Completed</span>';

@@ -109,6 +109,7 @@
            </a>
         </div>
     </div>
+    @endhasrole
     <div class="col-xl-3 col-sm-6 col-12">
         <div class="card">
            <a href="/invoice">
@@ -132,7 +133,6 @@
            </a>
         </div>
     </div>
-    @endhasrole
 </div>
 @endsection
 

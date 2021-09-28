@@ -193,8 +193,9 @@
             <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
               <h5>Product Description</h5>
               <p class="small text-muted text-uppercase mb-2" style="font-size: 25px">{{ $item->item_name }}</p>
-
+              @hasrole('admin')
               <h6 style="font-size: 30px">${{ number_format((float)$item->price, 2, '.', '') }}</h6>
+              @endhasrole
               <p class="pt-1" style="font-size: 20px">{{ $item->item_note }}</p>
             </div>
             

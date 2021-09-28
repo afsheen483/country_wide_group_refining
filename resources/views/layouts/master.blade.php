@@ -27,11 +27,7 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
    		<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 		   <style>
-			body {
-			-moz-transform: scale(0.8, 0.8); /* Moz-browsers */
-			zoom: 0.8; /* Other non-webkit browsers */
-			zoom: 80%; /* Webkit browsers */
-		}
+		
 		.slimScrollDiv{
 			overflow:  visible !important;
 		}
@@ -42,6 +38,9 @@
 			font-size: 28px;
 			font-weight: bold;
 		}
+		/* body{
+			zoom: 80%;
+		} */
 		</style>
 		
 		<!--[if lt IE 9]>

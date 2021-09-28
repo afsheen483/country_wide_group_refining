@@ -32,13 +32,10 @@
         height: auto;
 
     }
-    body {
-       
-        zoom: 80% !important;
-    }
+  
     .page-header {
     padding-bottom: 9px !important;
-    margin: 10px 0 10px !important;
+    margin: 8px 0 8px !important;
     border-bottom: 1px solid #eee !important;
 }
 .page-title{
@@ -51,6 +48,8 @@
 @endsection
 @section('headername')
 <a href="{{ url()->previous() }}" class="btn btn-lg btn-success" style="float: right">Back</a>
+<a href="{{ url('invoice_slip',['id' => request()->id]) }}"   class="btn btn-info btn-lg" style="float: right;margin-right:0.4%;padding:0.6%"><i class="fa fa-print" ></i></a>&nbsp;&nbsp;
+
     {{-- Invoice --}}
 @endsection
 @section('content')
@@ -59,72 +58,41 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
-                <div class="row">
-                    <div class="col-md-9" style="float: left">
-                        <br>
-                        @if ($items[0]->created_by == '' || $items[0]->created_by == NULL)
-                            <h3 style="font-size: 50px">{{ Auth::user()->first_name }}{{ " " }}{{ Auth::user()->last_name }}</h3>
-                            <h3> {{ Auth::user()->phone_num }}</h3>
-                            <h3>{{ Auth::user()->address }}</h3>
-                            <h3>{{ Auth::user()->city_name }}{{ ", " }}{{ Auth::user()->postal_code }}</h3>
-                        @else
-                           @php
-                           
-                               $data = \App\Models\User::where('id','=',$items[0]->created_by)->get();
-                          
-                         echo   "<h3  style='font-size: 40px'>".$data[0]->first_name . " " . $data[0]->last_name."</h3>";
-                          echo "<h3>" .$data[0]->phone_num."</h3>";
-                           echo "<h3>".$data[0]->address ."</h3>";
-                           echo "<h3>". $data[0]->city_name.", " . $data[0]->postal_code."</h3>";
-                            @endphp
-                        @endif
-                        <br>
-                        <h2 style="color:#094479"><strong>Bill To</strong></h2>
-                        <h3>Country Wide Group Refining</h3>
-                        <br>
-                        <h2  style="color:#094479"><strong>Invoice Date</strong></h2>
-                        <h3>{{ is_null($items[0]->invoice_date) ? date('Y-d-m'): $items[0]->invoice_date  }}</h3>
-                    </div>
-
-                    <div class="col-md-3" style="float:right;">
-                        <br>
-                        <h2  style="font-size: 40px;color:#094479">INVOICE</h2>
-                        <h2># {{ rand(1,9999) }}</h2>
-                            <br>
-                        <form method="post" enctype="multipart/form-data" action="{{ url('upload_file') }}">
-                        @csrf
-                        <input type="text" name="item_ids" id="item_ids" value=" {{ request()->item_id }}"
-                            hidden>
-                            <div class="form-group" >
-                                {{-- <h3><label for="">File</label> --}}
-                               <a href="{{ url('/'.$items[0]->invoice_file) }}" style="font-size: 15px" class="btn btn-lg btn-info" target="blank">Invoice File</a>
-                            </div>
-                        
-
-
-                    </form>
-                    </div>
+                <div class="invoice-title">
+                    <br>
+                    <h2>Invoice</h2><h3 class="pull-right"> # {{ rand(1,9999) }}</h3>
                 </div>
-            
+                <hr>
                 <div class="row">
                     <div class="col-xs-6">
-                        <address style="font-size: 15px;">
-                            {{-- <strong>Generate Invoice Date:</strong><br>
-                    {{  date("F j, Y") }}<br><br> --}}
+                        <address>
+                            @php   
+                            $data = \App\Models\User::where('id','=',$items[0]->created_by)->get();
+                            @endphp
+                       <h1> <strong>{{ $data[0]->first_name . " " . $data[0]->last_name }}</strong></h1><br>
+                            <h3>{{ $data[0]->phone_num }}<br>
+                            {{ $data[0]->address }}<br>
+                            {{ $data[0]->city_name.", " . $data[0]->postal_code }}<br></h3>
                         </address>
                     </div>
-                    <div class="col-lg-12 text-right">
-                        
-
-                            <div style="float: right;">
-                               
-                           
-                    </div>
-                       
+                    <div class="col-xs-6 text-right">
+                        <address>
+                            <h3><strong>Billed To:</strong></h3>
+                                <h3>Country Wide Group Refining</h3><br>
+                            </address>
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-6">
+                        <address>
+                            <h3><strong>Invoice Date:</strong></h3>
+                            <h3>{{ is_null($items[0]->invoice_date) ? date("F j, Y"): date("jS F, Y", strtotime($items[0]->invoice_date))  }}</h3>
+                        </address>
+                    </div>
+                </div>
+                </div>
             </div>
-        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -136,31 +104,30 @@
                             <table class="table table-condensed">
                                 <thead>
                                     <tr>
-                                        <td><strong>Item Name</strong></td>
-                                        <td class="text-center"><strong>Item Code</strong></td>
+                                        <td><strong>Description</strong></td>
+                                        {{-- <td class="text-center"><strong>Item Code</strong></td>
                                         <td class="text-center"><strong>Item Model</strong></td>
                                         <td class="text-center"><strong>Item Make</strong></td>
-                                        <td class="text-center"><strong>Item Number</strong></td>
+                                        <td class="text-center"><strong>Item Number</strong></td> --}}
                                         <td class="text-center"><strong>Price($)</strong></td>
+                                        <td class="text-center"><strong>Total</strong></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- foreach ($order->lineItems as $line) or some such thing here -->
                                     @foreach ($items as $item)
                                         <tr>
-                                            <td>{{ $item->item_name }}</td>
-                                            <td class="text-center">{{ $item->item_code }}</td>
-                                            <td class="text-center">{{ $item->item_model }}</td>
-                                            <td class="text-center">{{ $item->item_make }}</td>
-                                            <td class="text-center">{{ $item->item_numbers }}</td>
+                                            <td>{{ $item->item_code }} {{ "_" }} {{ $item->item_name }} {{ "(" }}{{ $item->item_numbers }}{{ ")" }}</td>
+
                                             <td class="text-center p">{{ $item->price }}</td>
-                                            {{-- <td class="text-right">$10.99</td> --}}
+    								{{-- <td class="text-center">1</td> --}}
+    								        <td class="text-center tp">{{ $item->price }}</td>
                                         </tr>
                                     @endforeach
                                     <tr>
+                                        {{-- <td class="thick-line"></td>
                                         <td class="thick-line"></td>
-                                        <td class="thick-line"></td>
-                                        <td class="thick-line"></td>
+                                        <td class="thick-line"></td> --}}
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
@@ -174,9 +141,9 @@
                                     </tr>
                                     <tr>
                                         <td class="no-line"></td>
+                                        {{-- <td class="no-line"></td>
                                         <td class="no-line"></td>
-                                        <td class="no-line"></td>
-                                        <td class="no-line"></td>
+                                        <td class="no-line"></td> --}}
                                         <td class="no-line text-center"><strong>Total</strong></td>
                                         <td class="no-line text-center price"></td>
                                     </tr>
@@ -188,22 +155,36 @@
                
             </div>
         </div>
-        <form method="post" enctype="multipart/form-data" action="{{ url('save_signature') }}">
+        @if ($item->vendor_signature == Null)
+        <form method="post" enctype="multipart/form-data" action="{{ url('save_signature') }}" >
             @csrf
             @method('PUT')
             <input type="text" name="invoice_head_id" id="invoice_head_id" value=" {{ request()->id }}" hidden>
     
             <div id="signature-pad" class="m-signature-pad">
                 <div class="m-signature-pad--body" class="col-lg-7 col-md-7 col-xs-12">
-                  <canvas style="border: 2px dashed #ccc;height:200px" ></canvas>
-                  <textarea class="form-control" name="signature" id="signature" rows="3" hidden></textarea>
+                    @if ($agent->isMobile())
+                        <canvas style="border: 2px dashed #ccc;height:200px;width:300px !important" ></canvas>
+                        <textarea class="form-control" name="signature" id="signature" rows="3" hidden></textarea>
+                    @else
+                        <canvas style="border: 2px dashed #ccc;height:200px;width:300px !important" ></canvas>
+                        <textarea class="form-control" name="signature" id="signature" rows="3" hidden></textarea>
+                    @endif
+                  
                  
                 </div>
                     <br>
-                  <div class="col-lg-5 col-md-5 col-xs-12" style="float: left;">
-                    <button type="button" class="btn btn-lg btn-secondary" data-action="clear">Clear</button>&nbsp;&nbsp;
-                    <button type="submit" class="btn btn-lg btn-success " data-action="save" id="save" >Save</button>
-                </div>
+                    @if ($agent->isMobile())
+                         <div class="col-lg-10 col-md-10 col-xs-10 col-sm-10" style="margin-left:56%">
+                            <button type="button" class="btn btn-lg btn-secondary" data-action="clear">Clear</button>&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-lg btn-success " data-action="save" id="save" >Save</button>
+                        </div>
+                         @else
+                         <div class="col-lg-10 col-md-10 col-xs-10 col-sm-10" style="float: right;">
+                            <button type="button" class="btn btn-lg btn-secondary" data-action="clear">Clear</button>&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-lg btn-success " data-action="save" id="save" >Save</button>
+                        </div>
+                         @endif
                 
             </div>
            
@@ -216,6 +197,19 @@
             </div>
             <br>
           </form>
+        @else
+            
+        <div class="col-sm-12 col-lg-12 col-md-12" style="margin-left:80%">
+                            
+            <p style="font-size: 15px;"><b>Vendor Signature</b></p><img src="{{ url('/'.$item->vendor_signature) }}" alt="" height="100px" width="200px">
+        </div>
+        @endif
+       
+        
+        <div class="col-12" style="text-align: center;">
+            
+            <p style="font-weight: bold;font-size:14px">Thank you for your business!</p>
+        </div>
       
 
     </div>

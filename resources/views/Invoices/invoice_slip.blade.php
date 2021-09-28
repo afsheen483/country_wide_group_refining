@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-
-
-   
-</head>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
 <style>
-    body {
+    .invoice-title h2, .invoice-title h3 {
+    display: inline-block;
+}
+
+.table > tbody > tr > .no-line {
+    border-top: none;
+}
+
+.table > thead > tr > .no-line {
+    border-bottom: none;
+}
+
+.table > tbody > tr > .thick-line {
+    border-top: 2px solid;
+}
+body {
   background: rgb(204,204,204); 
 }
 page {
@@ -22,93 +27,122 @@ page {
   margin: 0 auto;
   margin-bottom: 0.5cm;
   box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+  
 }
 page[size="A4"] {  
   width: 21cm;
   height: 29.7cm; 
+  
 }
 </style>
-<body>
+<page size="A4">
+
+    <div class="row" style="margin-left:5%;margin-right:5%">
+        <div class="col-xs-12">
+    		<div class="invoice-title">
+    			<h2>Invoice</h2><h3 class="pull-right"># {{ rand(1,9999) }}</h3>
+    		</div>
+    		<hr>
+    		<div class="row">
+    			<div class="col-xs-6">
+    				<address>
+                        @php   
+                        $data = \App\Models\User::where('id','=',$items[0]->created_by)->get();
+                        @endphp
+    				<strong>{{ $data[0]->first_name . " " . $data[0]->last_name }}</strong><br>
+    					{{ $data[0]->phone_num }}<br>
+    					{{ $data[0]->address }}<br>
+    					{{ $data[0]->city_name.", " . $data[0]->postal_code }}<br>
+    				</address>
+    			</div>
+    			<div class="col-xs-6 text-right">
+    				<address>
+                        <strong>Billed To:</strong><br>
+                            Country Wide Group Refining<br>
+                        </address>
+    			</div>
+    		</div>
+    		<div class="row">
+    			<div class="col-xs-6">
+    				<address>
+    					<strong>Invoice Date:</strong><br>
+                        {{ is_null($items[0]->invoice_date) ? date("F j, Y"): date("jS F, Y", strtotime($items[0]->invoice_date))  }}
+    				</address>
+    			</div>
+    			<div class="col-xs-6 text-right">
+    				{{-- <address>
+    					<strong>Order Date:</strong><br>
+    					March 7, 2014<br><br>
+    				</address> --}}
+    			</div>
+    		</div>
+    	</div>
+    </div>
     
-<br>
+    <div class="row" style="margin-left:5%;margin-right:5%"> 
+    	<div class="col-12">
+    		<div class="panel panel-default">
+    			<div class="panel-heading">
+    				<h3 class="panel-title"><strong>Item summary</strong></h3>
+    			</div>
+    			<div class="panel-body">
+    				<div class="table-responsive">
+    					<table class="table table-condensed">
+    						<thead>
+                                <tr>
+        							<td><strong>Description</strong></td>
+        							<td class="text-center"><strong>Price</strong></td>
+        							{{-- <td class="text-center"><strong>Quantity</strong></td> --}}
+        							<td class="text-right"><strong>Totals</strong></td>
+                                </tr>
+    						</thead>
+    						<tbody>
+    							<!-- foreach ($order->lineItems as $line) or some such thing here -->
+    							@foreach ($items as $item)
+                                <tr>
+    								<td>{{ $item->item_code }} {{ "_" }} {{ $item->item_name }} {{ "(" }}{{ $item->item_numbers }}{{ ")" }}</td>
+    								<td class="text-center p">{{ $item->price }}</td>
+    								{{-- <td class="text-center">1</td> --}}
+    								<td class="text-right tp">{{ $item->price }}</td>
+    							</tr>
+                                @endforeach
+    							{{-- <tr>
+    								<td class="thick-line"></td>
+    								<td class="thick-line text-center"><strong>Subtotal</strong></td>
+    								<td class="thick-line text-right">$670.99</td>
+    							</tr>
+    							<tr>
+    								<td class="no-line"></td>
+    								<td class="no-line text-center"><strong>Shipping</strong></td>
+    								<td class="no-line text-right">$15</td>
+    							</tr> --}}
+    							<tr>
+    								<td class="thick-line"></td>
+    								<td class="thick-line text-center"><strong>Total</strong></td>
+    								<td class="thick-line text-right price" style="font-weight:bold"></td>
+    							</tr>
+    						</tbody>
+    					</table>
+    				</div>
+    			</div>
+               
+    		</div>
+    	</div>
 
-    <page size="A4">
-                    <div class="col-md-9" style="float: left">
-                            <br>
-                            @if ($items[0]->created_by == '' || $items[0]->created_by == NULL)
-                                <h3 style="font-size: 30px">{{ Auth::user()->first_name }}{{ " " }}{{ Auth::user()->last_name }}</h3>
-                                <h4> {{ Auth::user()->phone_num }}</h4>
-                                <h4>{{ Auth::user()->address }}</h4>
-                                <h4>{{ Auth::user()->city_name }}{{ ", " }}{{ Auth::user()->postal_code }}</h4>
-                            @else
-                            @php
+        <div class="col-12" style="float: right">
                             
-                                $data = \App\Models\User::where('id','=',$items[0]->created_by)->get();
-                            
-                            echo   "<h3  style='font-size: 30px'>".$data[0]->first_name . " " . $data[0]->last_name."</h3>";
-                            echo "<h4>" .$data[0]->phone_num."</h4>";
-                            echo "<h4>".$data[0]->address ."</h4>";
-                            echo "<h4>". $data[0]->city_name.", " . $data[0]->postal_code."</h4>";
-                                @endphp
-                            @endif
-                            
-                            <h3 style="color:#094479"><strong>Bill To</strong></h3>
-                            <h4>Country Wide Group Refining</h4>
-                           
-                            <h3  style="color:#094479"><strong>Invoice Date</strong></h3>
-                            <h4>{{ is_null($items[0]->invoice_date) ? date("F j, Y"): $items[0]->invoice_date  }}</h4>
-                        </div>
-                          <br>
-                      <div class="col-md-2" style="float:right;">
-                          <h2><strong>Invoice</strong></h2>
-                          <h4># {{ rand(1,9999) }}</h4>
-                              <br>
-                         
-                     
-                      </div>
-            <div class="container" style="margin-left: -2%;margin-right:-10px;">
-                <div class="col-md-9 col-lg-8 col-xs-9" style="width: 21cm;">
-                         
-                                <table border="1" class="table" >
-                                    <thead style="background-color:#094479;color:white;">
-                                        <tr>
-                                            <td  ><strong>Description</strong></td>
-                                            <td ><strong>Unit Price($)</strong></td>
-                                            <td ><strong>Amount($)</strong></td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- foreach ($order->lineItems as $line) or some such thing here -->
-                                        @foreach ($items as $item)
-                                        <tr>
-                                            <td >{{ $item->item_code }} {{ "_" }} {{ $item->item_name }} {{ "(" }}{{ $item->item_numbers }}{{ ")" }}</td>
-                                            <td  class="p">{{ $item->price }}</td>
-                                            <td class="tp" >{{ $item->price }}</td>
-                                        </tr>
-                                        @endforeach
-                                        <tr>
-                                          <td ></td>
-                                          <td class="" ><strong>Total</strong></td>
-                                          <td class="price" style="font-size: 15px;font-weight:bold"></td>
-                                      </tr>
-                                      
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    
-            <br>
-            <div class="col-md-12" style="margin-left: 10px;">
-                            
-                <p><b>Signature</b></p><img src="{{ url('/'.$item->vendor_signature) }}" alt="" height="100px" width="200px">
-            </div>
-
-            <div class="col-6" style="text-align: center">
-                
-                <p style="font-weight: bold;font-size:14px">Thank you for your business!</p>
+            <p><b>Vendor Signature</b></p><img src="{{ url('/'.$item->vendor_signature) }}" alt="" height="100px" width="200px">
         </div>
+        
+        <div class="col-12" style="text-align: center;margin-top:25%">
+            
+            <p style="font-weight: bold;font-size:14px">Thank you for your business!</p>
+        </div>
+    </div>
+    
+</div>
 </page>
-</body>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
   
@@ -135,4 +169,3 @@ $(document).ready(function(){
 </script>
 
     
-</html>
