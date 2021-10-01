@@ -32,7 +32,9 @@
         height: auto;
 
     }
-  
+    .td {
+       font-size: 14px;
+    }
     .page-header {
     padding-bottom: 9px !important;
     margin: 8px 0 8px !important;
@@ -60,7 +62,7 @@
             <div class="col-xs-12">
                 <div class="invoice-title">
                     <br>
-                    <h2>Invoice</h2><h3 class="pull-right"> # {{ rand(1,9999) }}</h3>
+                    <h2>Invoice</h2><h4 class="pull-right" style="font-size: 28px"> # {{ rand(1,9999) }}</h4>
                 </div>
                 <hr>
                 <div class="row">
@@ -70,15 +72,15 @@
                             $data = \App\Models\User::where('id','=',$items[0]->created_by)->get();
                             @endphp
                        <h1> <strong>{{ $data[0]->first_name . " " . $data[0]->last_name }}</strong></h1><br>
-                            <h3>{{ $data[0]->phone_num }}<br>
+                            <h4>{{ $data[0]->phone_num }}<br>
                             {{ $data[0]->address }}<br>
-                            {{ $data[0]->city_name.", " . $data[0]->postal_code }}<br></h3>
+                            {{ $data[0]->city_name.", " . $data[0]->postal_code }}<br></h4>
                         </address>
                     </div>
                     <div class="col-xs-6 text-right">
                         <address>
                             <h3><strong>Billed To:</strong></h3>
-                                <h3>Country Wide Group Refining</h3><br>
+                                <h4>Country Wide Group Refining</h4><br>
                             </address>
                     </div>
                 </div>
@@ -87,7 +89,7 @@
                     <div class="col-6">
                         <address>
                             <h3><strong>Invoice Date:</strong></h3>
-                            <h3>{{ is_null($items[0]->invoice_date) ? date("F j, Y"): date("jS F, Y", strtotime($items[0]->invoice_date))  }}</h3>
+                            <h4>{{ is_null($items[0]->invoice_date) ? date("F j, Y"): date("jS F, Y", strtotime($items[0]->invoice_date))  }}</h4>
                         </address>
                     </div>
                 </div>
@@ -110,24 +112,28 @@
                                         <td class="text-center"><strong>Item Make</strong></td>
                                         <td class="text-center"><strong>Item Number</strong></td> --}}
                                         <td class="text-center"><strong>Price($)</strong></td>
+                                        <td class="text-center"><strong>Quantity</strong></td>
                                         <td class="text-center"><strong>Total</strong></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- foreach ($order->lineItems as $line) or some such thing here -->
                                     @foreach ($items as $item)
-                                        <tr>
+                                        <tr class="td">
                                             <td>{{ $item->item_code }} {{ "_" }} {{ $item->item_name }} {{ "(" }}{{ $item->item_numbers }}{{ ")" }}</td>
 
-                                            <td class="text-center p">{{ $item->price }}</td>
+                                            <td class="text-center p" id="price_{{ $item->item_id }}">{{ $item->price }}</td>
+                                            <td class="text-center qty" contenteditable="true" data-item="{{ $item->item_id }}" id="qty_{{ $item->item_id }}">{{ is_null($item->quantity) ? '' : $item->quantity }}</td>
+
     								{{-- <td class="text-center">1</td> --}}
-    								        <td class="text-center tp">{{ $item->price }}</td>
+    								        <td class="text-center tp" id="tp_{{ $item->item_id }}"></td>
                                         </tr>
                                     @endforeach
                                     <tr>
                                         {{-- <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td> --}}
+                                        <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
@@ -140,6 +146,7 @@
                                 <td class="text-right">$10.99</td> --}}
                                     </tr>
                                     <tr>
+                                        <td class="no-line"></td>
                                         <td class="no-line"></td>
                                         {{-- <td class="no-line"></td>
                                         <td class="no-line"></td>
@@ -218,25 +225,27 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function(){
             var sum = 0;
-            $(".p").each(function(){
-                var val = $(this).text();
-                console.log(val);
-                sum += Number(val);
-            });
-            console.log(sum);
-            $(".price").text("$"+sum.toFixed(2));
+            // $(".p").each(function(){
+            //     var val = $(this).text();
+            //     console.log(val);
+            //     sum += Number(val);
+            // });
+            // console.log(sum);
+            // $(".price").text("$"+sum.toFixed(2));
 
             var sum2 = 0;
-            $(".tp").each(function(){
-                var val2 = $(this).text();
-                console.log(val2);
-                sum2+= Number(val2);
-            });
-            console.log(sum2);
-            $(".total_price").text("$"+sum2.toFixed(2));
+            // $(".tp").each(function(){
+            //     var val2 = $(this).text();
+            //     console.log(val2);
+            //     sum2+= Number(val2);
+            // });
+            // console.log(sum2);
+            // $(".total_price").text("$"+sum2.toFixed(2));
         });
         $(function () {
       var wrapper = document.getElementById("signature-pad"),
@@ -277,22 +286,80 @@
         }
       });
       });
-      function getZoom(el) {
-        
-  if (!el || el===document) {
-    return 1;
-  }
-  var z=+$(el).css('zoom');
-  if (!z) {
-    return 1;
-  }
-  z*=getZoom(el.parentNode);
-  return z;
-}
-canvas = wrapper.querySelector("canvas");
-var zoom=getZoom(canvas[0]);
-newX/=zoom;
-newY/=zoom;
-// }
+      $(document).ready(function(){
+            $(".qty").on('focusout',function(){
+                var id = $(this).data("item");
+                //alert(id);
+                var qty = $("#qty_"+id).text();
+                //alert(qty);
+                var url = "{{url('insert_quantity')}}";
+            $.ajax({
+                      
+                      url : url,
+                      type : 'PUT',
+                      cache: false,
+                      data: {
+                          _token:'{{ csrf_token() }}',
+                          qty: qty,
+                          id : id
+                          },
+                      success:function(data){
+                        console.log("success");
+                        if (data == 1) {
+                            Swal.fire({
+                                title:'Congratulations!',
+                                text:'Quantity has updated successfully',
+                                type: 'success',
+                              })
+                        }else{
+                            Swal.fire({
+                                title:'OOPSS!',
+                                text:'Something went wrong',
+                                type: 'warning',
+                              })
+                        }
+                      
+                      }
+        });
+            });
+
+            $('.qty').keyup(function(){
+                var mult = 0;
+                $(".p,.qty").each(function(){
+                var id = $(this).data("item");
+               
+                var qty = $("#qty_"+id).text();
+                var price = $("#price_"+id).text();
+                console.log("qty"+qty);
+                // var unit_price = $('.p', this).text();
+                var total_multiply = (qty * 1) * (price * 1);
+                console.log(total_multiply);
+                $('#tp_'+id).text(total_multiply.toFixed(2));
+                // $('#quant_unit',this).text("$"+total_multiply.toFixed(2));
+                // $('#contact_lens_cop',this).text("$"+total_multiply.toFixed(2));
+
+                 mult += total_multiply;
+             });
+             $(".price").text("$"+mult.toFixed(2));
+            }).keyup();
+            var multi = 0;
+            $(".p,.qty").each(function(){
+               
+                var id = $(this).data("item");
+               
+                var qty = $("#qty_"+id).text();
+                var price = $("#price_"+id).text();
+               console.log("qty"+price);
+                // var unit_price = $('.p', this).text();
+                var total_multiply = (qty * 1) * (price * 1);
+                console.log("to"+total_multiply);
+                $('#tp_'+id).text(total_multiply.toFixed(2));
+                // $('#quant_unit',this).text("$"+total_multiply.toFixed(2));
+                // $('#contact_lens_cop',this).text("$"+total_multiply.toFixed(2));
+
+                 multi += total_multiply;
+             });
+             $(".price").text("$"+multi.toFixed(2))
+        });
     </script>
 @endsection

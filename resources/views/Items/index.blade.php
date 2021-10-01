@@ -1,14 +1,22 @@
 @extends('layouts.master')
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
-{{-- <link rel="stylesheet" href="https://editor.datatables.net/extensions/Editor/css/editor.dataTables.min.css"> --}}
-
-{{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.7/css/responsive.dataTables.min.css"> --}}
 @if ($agent->isMobile())
 <style>
     #mytable_length{
         display: none;
     }
+    .mobile_btn {
+		
+		margin-top: 5%;
+	}
+    .rounded-circle {
+	margin-top: 50% !important;
+}
+.logo{
+    margin-top: 2.4%;
+}
 </style>
 @endif
 
@@ -26,6 +34,16 @@
         .item_price{
             display: none;
         }
+        .mobile_btn {
+		
+		margin-top: 5%;
+	}
+    .rounded-circle {
+	margin-top: 50% !important;
+}
+.logo{
+    margin-top: 2.4%;
+}
     </style>
 @endif
 @hasrole('vendor')
@@ -45,6 +63,7 @@
     </style>
 @endhasrole
 @section('title')
+
     Items
 @endsection
 
@@ -54,7 +73,7 @@
 
     @hasrole('admin')
     <a href="{{ url('create_item') }}" style="float: right" class="btn btn-md btn-primary">+ Add Item</a>
-    <select name="user_id" id="user_id" class="form-control col-1" style="float: right;margin-right:0.1%">
+    <select name="user_id" id="user_id" class="form-control col-1" style="float: right;margin-right:0.8%">
         <option value="All">All User</option>
         @foreach ($user_array as $user)
             <option value="{{ $user->id }}">{{ $user->first_name }}{{ " " }}{{ $user->last_name }}</option>
@@ -62,7 +81,7 @@
     </select>  
 <!--     <a href="/metal_price" target="_blank" style="float: right; margin-right:0.1%" class="btn btn-md btn-success">Metal Price</a>
  -->   
-        <form class="form-inline"  id="inline_form" style="float: right;margin-right:0.1%">
+        <form class="form-inline"  id="inline_form" style="float: right;">
             <label for="" style="font-size: 15px;">Update Price by %</label>&nbsp;&nbsp;
             <input type="number" id="percentage" max="100" min="0" name="percentage" class="form-control col-2" required>&nbsp;&nbsp;
 
@@ -144,8 +163,8 @@
 @endsection
 
 @section('scripts')
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -567,7 +586,7 @@ $('#mytable').on('click', '.checkedbox',function() {
         $('#mytable').on('focusout', '.item_price', function (){
             var item_ids = $(this).data("price");
             var val = $("#item_id_"+item_ids).text();
-        // alert(val);
+        //alert(val);
             var user_price_value = $.trim(val);
            // alert(price_val);
             var user_id = $(this).data("user");

@@ -14,6 +14,7 @@ class InvoiceDetailModel extends Model
         'id',
         'invoice_head_id',
         'item_id',
+        'quantity',
         'created_by',
         'created_at',
         'updated_at',

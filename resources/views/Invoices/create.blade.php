@@ -14,7 +14,9 @@
     .table>thead>tr>.no-line {
         border-bottom: none;
     }
-
+    .td {
+       font-size: 14px;
+    }
     .table>tbody>tr>.thick-line {
         border-top: 2px solid;
     }
@@ -56,7 +58,7 @@
             <div class="col-xs-12">
                 <div class="invoice-title">
                     <br>
-                    <h2>Invoice</h2><h3 class="pull-right"> # {{ rand(1,9999) }}</h3>
+                    <h2>Invoice</h2><h4 class="pull-right" style="font-size: 28px"> # {{ rand(1,9999) }}</h4>
                 </div>
                 <hr>
                 <div class="row">
@@ -64,17 +66,28 @@
                         <address>
                             @php   
                             $data = \App\Models\User::where('id','=',$items[0]->created_by)->get();
+                            //dd($data);
                             @endphp
-                       <h1> <strong>{{ $data[0]->first_name . " " . $data[0]->last_name }}</strong></h1><br>
-                            <h3>{{ $data[0]->phone_num }}<br>
-                            {{ $data[0]->address }}<br>
-                            {{ $data[0]->city_name.", " . $data[0]->postal_code }}<br></h3>
+                            @if ($data == NULL || $data == '')
+                            <h1> <strong>{{ Auth::user()->first_name . " " . Auth::user()->last_name }}</strong></h1><br>
+                            <h4>{{ Auth::user()->phone_num }}<br>
+                                {{ Auth::user()->address }}<br>
+                                {{ Auth::user()->city_name.", " . Auth::user()->postal_code }}<br></h4>
+
+                            @else
+                            <h1> <strong>{{ $data[0]->first_name . " " . $data[0]->last_name }}</strong></h1><br>
+                            <h4>{{ $data[0]->phone_num }}<br>
+                                {{ $data[0]->address }}<br>
+                                {{ $data[0]->city_name.", " . $data[0]->postal_code }}<br></h4>
+
+                            @endif
+                            
                         </address>
                     </div>
                     <div class="col-xs-6 text-right">
                         <address>
-                            <h3><strong>Billed To:</strong></h3>
-                                <h3>Country Wide Group Refining</h3><br>
+                            <h4><strong>Billed To:</strong></h3>
+                                <h3>Country Wide Group Refining</h4><br>
                             </address>
                     </div>
                 </div>
@@ -83,14 +96,16 @@
                     <div class="col-6">
                         <address>
                             <h3><strong>Invoice Date:</strong></h3>
-                            <h3>{{ is_null($items[0]->invoice_date) ? date("F j, Y"): date("jS F, Y", strtotime($items[0]->invoice_date))  }}</h3>
+                            <h4>{{ is_null($items[0]->invoice_date) ? date("F j, Y"): date("jS F, Y", strtotime($items[0]->invoice_date))  }}</h4>
                         </address>
                     </div>
-                    <div class="col-sm-6 col-lg-6 col-md-6" style="margin-left:81.8%;margin-top:-12%">
+                    <div class="col-sm-6 col-lg-6 col-md-6" style="margin-left:81.8%;margin-top:-11%">
                         <form method="post" enctype="multipart/form-data" action="{{ url('upload_file') }}">
                             @csrf
                             <input type="text" name="item_ids" id="item_ids" value=" {{ request()->item_id }}"
                                 hidden>
+                                <input type="text" name="item_id[]" id="" value="" class="item_id" hidden>
+                                <input type="text" name="qty[]" class="in_qty form-control" value="" hidden>
                                 <div class="form-group">
                                     <label for="">File</label>
                                     <input type="file" name="image" id="" required
@@ -104,7 +119,7 @@
                                     
                                 </div>
                                 <button type="submit"
-                                class="btn btn-lg btn-success">Save
+                                class="btn btn-lg btn-success" id="save_invoice">Save
                                 Invoice</button>
                         </form>
                     </div>
@@ -123,6 +138,7 @@
                                             <tr>
                                                 <td><strong>Description</strong></td>
                                                 <td class="text-center"><strong>Price($)</strong></td>
+                                                <td class="text-center"><strong>Quantity</strong></td>
                                                 <td class="text-center"><strong>Total</strong></td>
                                                 {{-- <td class="text-center"><strong>Item Make</strong></td>
                                                 <td class="text-center"><strong>Item Number</strong></td>
@@ -132,12 +148,12 @@
                                         <tbody>
                                             <!-- foreach ($order->lineItems as $line) or some such thing here -->
                                             @foreach ($items as $item)
-                                                <tr>
+                                                <tr class="td">
                                                     <td>{{ $item->item_code }} {{ "_" }} {{ $item->item_name }} {{ "(" }}{{ $item->item_numbers }}{{ ")" }}</td>
         
-                                                    <td class="text-center p">{{ $item->price }}</td>
-                                            {{-- <td class="text-center">1</td> --}}
-                                                    <td class="text-center tp">{{ $item->price }}</td>
+                                                    <td class="text-center p" id="price_{{ $item->id }}">{{ $item->price }}</td>
+                                                    <td class="text-center qty" contenteditable="true" data-item="{{ $item->id }}" id="qty_{{ $item->id }}">{{ is_null($item->quantity) ? '' : $item[0]->quantity }}</td>
+                                                    <td class="text-center tp" id="tp_{{ $item->id }}"></td>
                                                     {{-- <td class="text-right">$10.99</td> --}}
                                                 </tr>
                                             @endforeach
@@ -145,9 +161,9 @@
                                                 <td class="thick-line"></td>
                                                 <td class="thick-line"></td>
                                                 <td class="thick-line"></td>
-                                                {{-- <td class="thick-line"></td>
                                                 <td class="thick-line"></td>
-                                                <td class="thick-line"></td> --}}
+                                                <td class="thick-line"></td>
+                                                {{-- <td class="thick-line"></td> --}}
                                                 {{-- <td class="thick-line"></td>
                                         <td class="thick-line"></td> --}}
                                                 {{-- <td class="thick-line text-center"><strong>Subtotal</strong></td>
@@ -158,9 +174,9 @@
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
-                                                {{-- <td class="no-line"></td>
                                                 <td class="no-line"></td>
-                                                <td class="no-line"></td> --}}
+                                                {{-- <td class="no-line"></td> --}}
+                                                {{-- <td class="no-line"></td> --}}
                                                 <td class="no-line text-center"><strong>Total</strong></td>
                                                 <td class="no-line text-center price"></td>
                                             </tr>
@@ -223,25 +239,27 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function(){
             var sum = 0;
-            $(".p").each(function(){
-                var val = $(this).text();
-                console.log(val);
-                sum += Number(val);
-            });
-            console.log(sum);
-            $(".price").text("$"+sum.toFixed(2));
+            // $(".p").each(function(){
+            //     var val = $(this).text();
+            //     console.log(val);
+            //     sum += Number(val);
+            // });
+            // console.log(sum);
+            // $(".price").text("$"+sum.toFixed(2));
 
             var sum2 = 0;
-            $(".tp").each(function(){
-                var val2 = $(this).text();
-                console.log(val2);
-                sum2+= Number(val2);
-            });
-            console.log(sum2);
-            $(".total_price").text("$"+sum2.toFixed(2));
+            // $(".tp").each(function(){
+            //     var val2 = $(this).text();
+            //     console.log(val2);
+            //     sum2+= Number(val2);
+            // });
+            // console.log(sum2);
+            // $(".total_price").text("$"+sum2.toFixed(2));
         });
         $(function () {
       var wrapper = document.getElementById("signature-pad"),
@@ -282,22 +300,52 @@
         }
       });
       });
-      function getZoom(el) {
-        
-  if (!el || el===document) {
-    return 1;
-  }
-  var z=+$(el).css('zoom');
-  if (!z) {
-    return 1;
-  }
-  z*=getZoom(el.parentNode);
-  return z;
-}
-canvas = wrapper.querySelector("canvas");
-var zoom=getZoom(canvas[0]);
-newX/=zoom;
-newY/=zoom;
+     
 // }
+
+
+        $(document).ready(function(){
+            $(".qty").on('focusout',function(){
+                var id = $(this).data("item");
+                //alert(id);
+               var ids =  $(".item_id").val();
+
+               ids = ids + id + ",";
+               $(".item_id").val(ids);
+                    var qty = $("#qty_"+id).text();
+                    
+                   var i_q =  $(".in_qty").val();
+                    //i_q = i_q + id+"_"+qty + ',';
+                    i_q = i_q + qty + ',';
+                    //$(".in_qty").val(i_q);
+
+               // alert(qty);
+                $(".in_qty").val(i_q);
+                //var i_q = $(".in_qty").val();
+
+                
+            });
+
+            $('.qty').keyup(function(){
+                var mult = 0;
+                $(".p,.qty").each(function(){
+                var id = $(this).data("item");
+               
+                var qty = $("#qty_"+id).text();
+                var price = $("#price_"+id).text();
+                console.log("qty"+qty);
+                // var unit_price = $('.p', this).text();
+                var total_multiply = (qty * 1) * (price * 1);
+                console.log(total_multiply);
+                $('#tp_'+id).text(total_multiply.toFixed(2));
+                // $('#quant_unit',this).text("$"+total_multiply.toFixed(2));
+                // $('#contact_lens_cop',this).text("$"+total_multiply.toFixed(2));
+
+                 mult += total_multiply;
+             });
+             $(".price").text("$"+mult.toFixed(2))
+            });
+
+        });
     </script>
 @endsection

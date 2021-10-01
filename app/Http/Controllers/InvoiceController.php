@@ -17,6 +17,7 @@ class InvoiceController extends Controller
     {
         $ids = $request->item_id;
         $vendor_id = $request->vendor_id;
+        //dd("yes");
         return redirect('invoice_generate/'.$ids.'/'.$vendor_id);
     }
     public function InsertInvoice(Request $request)
@@ -24,7 +25,14 @@ class InvoiceController extends Controller
         
         try {
             //dd($request->all());
-            
+            $qty = implode(",",$request->qty);
+            $array = explode(",",$qty);
+           
+           // dd($array);
+            $item_id_st = implode(",",$request->item_id);
+            $item_id_array = explode(",",$item_id_st);
+            //dd($item_id_array);
+
             
            // dd($item_ids);
            $md5Name = md5_file($request->file('image')->getRealPath());
@@ -34,41 +42,11 @@ class InvoiceController extends Controller
             $base_path = 'upload/';
             $image->move('upload',$md5Name);
 
-    //     $folderPath = public_path('upload/');
-    //         //dd($folderPath);
-    //     $image_parts = explode(";base64,", $request->signature);
-    //    // dd($image_parts);
-    //     $image_type_aux = explode("image/", $image_parts[0]);
-    //        //dd($image_type_aux);
-    //     $image_type = $image_type_aux[0];
-    //        //dd($image_type);
-    //     $image_base64 = base64_decode($image_parts[0]);
-    //         //dd($image_base64);
-    //     $signature = uniqid() . '.'.$image_type;
-    //       // dd($signature);
-    //     $filesi = $folderPath . $signature;
-    //     $image_base64->move('upload',$signature);
-    $date = date("Y-m-d");
-    $user_id = Auth::user()->id;
-    // $signatureUri = str_replace('data:image/png;base64,', '', $request->signature);
- 
-    //     $signature = str_replace(' ', '+', $signatureUri);
-         
-    //     $signatureData = base64_decode($signature);
-         
-    //     $fileName = strtotime(now()).'_signature.png';
-         
-    //     $sig_file = file_put_contents(public_path('upload/').$fileName, $signatureData);
-         
-        //$message = 'Signature Stored Successfully. <a target="_blank" href="signatures/'.$fileName.'">View Signature</a>';
-            //dd($file);
-        //file_put_contents($file, $image_base64);
-        //$save = new Signature;
-        //$save->invoice_file = $base_path.$file;
-        //$save->signature = $signature;
-          //      $save->save();
-          $vendor_id = $request->vendor_id;
-         $invoice_head_id = InvoiceHeadModel::create([
+            $date = date("Y-m-d");
+            $user_id = Auth::user()->id;
+
+                $vendor_id = $request->vendor_id;
+                $invoice_head_id = InvoiceHeadModel::create([
             'vendor_id' => $user_id,
             // 'vendor_signature' => $base_path.$fileName,
             'invoice_file' => $base_path.$md5Name,
@@ -87,11 +65,21 @@ class InvoiceController extends Controller
            
             //dd($id);
             if ($id != NULL || $id != "") {
-                InvoiceDetailModel::create([
-                    'invoice_head_id' => $invoice_head_id->id,
-                    'item_id' => $id,
-                    'created_by' => $user_id
-                ]);
+              
+                    InvoiceDetailModel::create([
+                        'invoice_head_id' => $invoice_head_id->id,
+                        'item_id' => $id,
+                        'created_by' => $user_id
+                    ]);
+                
+               
+            }
+            foreach ($array as $item) {
+                if ($item != '') {
+                    InvoiceDetailModel::whereIn('item_id',$item_id_array)->update([
+                        'quantity' => $item
+                    ]);
+                }
             }
               
             
@@ -109,12 +97,13 @@ class InvoiceController extends Controller
         try {
             $ids = $request->item_id;
             $item_ids = explode(',',$ids);
-           // dd($item_ids);
+           //dd($item_ids);
             if(is_array($item_ids))
             {
             $items = ItemModel::select('items.*')->whereIn("items.id",$item_ids)->get();
+            $item = InvoiceDetailModel::select('invoice_details.*')->whereIn("invoice_details.item_id",$item_ids)->get();
             //dd($items);
-            return view('Invoices.create',compact('items'));
+            return view('Invoices.create',compact('items','item'));
 
             }
             //dd($items);
@@ -209,7 +198,7 @@ class InvoiceController extends Controller
     {
        try {
           // dd($id);
-        $items = InvoiceHeadModel::select('invoice_head.*','items.item_code','items.item_name','items.item_numbers','items.item_make','items.item_model','items.item_year','items.item_note','items.metals','items.weight','items.item_image','items.price')->join('invoice_details','invoice_details.invoice_head_id','invoice_head.id')->join('items','invoice_details.item_id','items.id')->where("invoice_head.id","=",$id)->get();
+        $items = InvoiceHeadModel::select('invoice_head.*','invoice_details.item_id','invoice_details.quantity','items.item_code','items.item_name','items.item_numbers','items.item_make','items.item_model','items.item_year','items.item_note','items.metals','items.weight','items.item_image','items.price')->join('invoice_details','invoice_details.invoice_head_id','invoice_head.id')->join('items','invoice_details.item_id','items.id')->where("invoice_head.id","=",$id)->get();
         //dd($items);
         return view('Invoices.invoice_view',compact('items'));
        } catch (\Throwable $th) {
@@ -262,6 +251,8 @@ class InvoiceController extends Controller
         $items =  DB::select("SELECT
         h.vendor_id,
         h.vendor_signature,
+        d.quantity,
+        d.item_id,
         h.invoice_file,
         h.invoice_date,
         i.item_code,
@@ -297,6 +288,17 @@ class InvoiceController extends Controller
         ]);
         if ($delete) {
            return 1;
+        }
+    }
+    public function Quantity(Request $request)
+    {
+        $id = $request->id;
+        $qty = $request->qty;
+       $fire =  InvoiceDetailModel::where('item_id','=',$id)->update([
+            'quantity' => $qty,
+        ]);
+        if ($fire) {
+            return 1;
         }
     }
 }

@@ -76,7 +76,7 @@
                 </div>
                 <div class="form-group col-3">
                     {{ Form::label('img', 'Image') }}
-                    <input type="file" name="image" id="">
+                    <input type="file" name="image[]" id="" multiple="multiple" >
                 </div>
             </div>
             <div class="row required">

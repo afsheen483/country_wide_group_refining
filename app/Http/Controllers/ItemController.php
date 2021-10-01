@@ -196,14 +196,16 @@ class ItemController extends Controller
             $date = date("Y-m-d h:i:s");
 
             $image_date = date("Y-m-d");
+
+           
             $id = Auth::user()->id;
-            $image=$request->file('image');
-                            $file = $image->getClientOriginalName();
-                           // dd($file);
-                            $base_path = 'upload/';
-                            $image->move('upload',$file);
-           $item_id =  DB::table('items')->insert([
-               'item_image' => $base_path.$file,
+            // $image=$request->file('image');
+            //                 $file = $image->getClientOriginalName();
+            //                // dd($file);
+            //                 $base_path = 'upload/';
+            //                 $image->move('upload',$file);
+           $item_id =  ItemModel::create([
+               //'item_image' => $base_path.$file,
                 'item_code' => $request->code,
                 'item_name' => $request->name,
                 'item_numbers' => $request->number,
@@ -218,7 +220,22 @@ class ItemController extends Controller
                 'created_by' => $id,
                 'created_at' => $date,
                 'is_deleted' => '0',
-            ]);
+            ])->id;
+            if($files=$request->file('image')){
+                foreach($files as $file){
+                    $name = $file->getClientOriginalName();
+                    $b_path = 'upload/';
+                    $file->move('upload',$name);
+                    $images[]=$name;
+                    ImageModel::create([
+                        'item_id' => $item_id,
+                        'image_url' => $b_path.$name,
+                        'date' => $image_date
+                    ]);
+                }
+            }
+           
+
 
 
 
@@ -259,7 +276,10 @@ class ItemController extends Controller
     {
         try {
             $item = DB::table('items')->find($id);
-            return view('Items.show')->with('item', $item);
+            $count = DB::table('images')->where('item_id','=',$id)->count();
+            $images = DB::table('images')->where('item_id','=',$id)->get();
+           // dd($images);
+            return view('Items.show')->with('item', $item)->with('images', $images)->with('count', $count);
             
            } catch (\Throwable $th) {
                //throw $th;
@@ -295,13 +315,15 @@ class ItemController extends Controller
         try {
           //  dd($request->all());
           $date = date("Y-m-d h:i:s");
+          $image_date = date("Y-m-d");
+
             $user_id = Auth::user()->id;
-            $image=$request->file('image');
-            $file = $image->getClientOriginalName();
-            $base_path = 'upload/';
-            $image->move('upload',$file);
+            // $image=$request->file('image');
+            // $file = $image->getClientOriginalName();
+            // $base_path = 'upload/';
+            // $image->move('upload',$file);
             ItemModel::where('id','=',$id)->update([
-                'item_image' => $base_path.$file,
+               // 'item_image' => $base_path.$file,
                 'item_code' => $request->code,
                 'item_name' => $request->name,
                 'item_numbers' => $request->number,
@@ -316,6 +338,18 @@ class ItemController extends Controller
                 'modified_by' => $user_id,
                 'modified_at' => $date
             ]);
+            if($files=$request->file('image')){
+                foreach($files as $file){
+                    $name = $file->getClientOriginalName();
+                    $b_path = 'upload/';
+                    $file->move('upload',$name);
+                    $images[]=$name;
+                    ImageModel::where('item_id','=',$id)->update([
+                        'image_url' => $b_path.$name,
+                        'date' => $image_date
+                    ]);
+                }
+            }
             return redirect()->route('itemdata');
         } catch (\Throwable $th) {
             dd($th);

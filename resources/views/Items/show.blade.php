@@ -37,11 +37,31 @@
                 <div class="row product-gallery mx-1">
   
                   <div class="col-12 mb-0">
+                    <br>
+                    @php
+                        $i=1;
+                    @endphp
+                    @foreach ($images as $image)
+                      @if ($i == $count -2 )
                     <figure class="view overlay rounded z-depth-1 main-img" style="max-height: 450px;">
+                      <a href="{{ asset($image->image_url) }}"
+                        data-size="710x823">
+                        <img src="{{ asset($image->image_url) }}"
+                          class="img-fluid z-depth-1" style="margin-top: -90px;" width="600px" height="400px">
+                      </a>
+                    </figure>
+                   
+                    @php
+                     ++$i;
+                        break;
+                    @endphp
+                    @endif                        
+                    @endforeach
+                    {{-- <figure class="view overlay rounded z-depth-1" style="visibility: hidden;">
                       <a href="{{ asset($item->item_image) }}"
                         data-size="710x823">
                         <img src="{{ asset($item->item_image) }}"
-                          class="img-fluid z-depth-1" style="margin-top: -90px;">
+                          class="img-fluid z-depth-1">
                       </a>
                     </figure>
                     <figure class="view overlay rounded z-depth-1" style="visibility: hidden;">
@@ -57,58 +77,35 @@
                         <img src="{{ asset($item->item_image) }}"
                           class="img-fluid z-depth-1">
                       </a>
-                    </figure>
-                    <figure class="view overlay rounded z-depth-1" style="visibility: hidden;">
-                      <a href="{{ asset($item->item_image) }}"
-                        data-size="710x823">
-                        <img src="{{ asset($item->item_image) }}"
-                          class="img-fluid z-depth-1">
-                      </a>
-                    </figure>
+                    </figure> --}}
                   </div>
-                  {{-- <div class="col-12">
+                  <div class="col-12">
                     <div class="row">
-                      <div class="col-3">
-                        <div class="view overlay rounded z-depth-1 gallery-item hoverable">
-                          <img src="{{ asset($item->item_image) }}"
-                            class="img-fluid">
-                          <div class="mask rgba-white-slight"></div>
+                      @foreach ($images as $image)
+                     
+                        @if ($i > 1)
+                        <div class="col-3">
+                          <div class="view overlay rounded z-depth-1 gallery-item hoverable">
+                            <img src="{{ asset($image->image_url) }}"
+                              class="img-fluid" width="200px" height="200px">
+                            <div class="mask rgba-white-slight"></div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="view overlay rounded z-depth-1 gallery-item hoverable">
-                          <img src="{{ asset($item->item_image) }}"
-                            class="img-fluid">
-                          <div class="mask rgba-white-slight"></div>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="view overlay rounded z-depth-1 gallery-item hoverable">
-                          <img src="{{ asset($item->item_image) }}"
-                            class="img-fluid">
-                          <div class="mask rgba-white-slight"></div>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="view overlay rounded z-depth-1 gallery-item hoverable">
-                          <img src="{{ asset($item->item_image) }}"
-                            class="img-fluid">
-                          <div class="mask rgba-white-slight"></div>
-                        </div>
-                      </div>
+                        @endif                          
+                      @endforeach
                     </div>
-                  </div> --}}
+                  </div>
                 </div>
   
               </div>
   
             </div>
             <div class="col-md-6">
-  
-              <h1 style="font-size: 60px" class="text-uppercase ">{{ $item->item_name }}</h1>
-              @hasrole('admin')
-              <p style="font-size: 40px;color:#1b5a90"><span class="mr-1"><strong>${{ number_format((float)$item->price, 2, '.', '') }}</strong></span></p>
-              @endhasrole
+              <br>
+              <h1 style="font-size: 40px" class="text-uppercase ">{{ $item->item_name }}</h1>
+            
+              <p style="font-size: 20px;color:#1b5a90"><span class="mr-1"><strong>${{ number_format((float)$item->price, 2, '.', '') }}</strong></span></p>
+             
               <p class="pt-1" style="font-size: 20px">{{ $item->item_note }}</p>
               <div class="table-responsive">
                 <table class="table table-sm table-borderless mb-0">
@@ -138,6 +135,7 @@
                   <tbody>
                     <tr>
                     
+                      @hasrole('admin')
                       <td>
                         <div class="mt-1" style="font-size: 20px">
                           <div class="form-check form-check-inline pl-0">
@@ -162,6 +160,7 @@
                           </div>
                         </div>
                       </td>
+                      @endhasrole
                     </tr>
                   </tbody>
                 </table>
@@ -173,7 +172,7 @@
         <!--Section: Block Content-->
   
         <!-- Classic tabs -->
-        <div class="classic-tabs">
+        {{-- <div class="classic-tabs">
   
           <ul class="nav tabs-primary nav-justified" id="advancedTab" role="tablist">
             <li class="nav-item">
@@ -203,7 +202,7 @@
               <div>
                 
               </div>
-            </div>
+            </div> --}}
           </div>
   
         </div>

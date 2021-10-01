@@ -142,6 +142,7 @@ Route::get('invoice_view/{id}','InvoiceController@ViewInvoices')->middleware('au
 Route::get('/invoice','InvoiceController@index')->name('invoice')->middleware("auth");
 Route::get('/invoice/getData','InvoiceController@getData')->name('invoice.getData')->middleware("auth");
 Route::put('/invoice_delete/{id}','InvoiceController@destroy')->middleware("auth");
+Route::put('/insert_quantity','InvoiceController@Quantity')->middleware("auth");
 // signatures save of vendor
 Route::put('save_signature','InvoiceController@Signature')->middleware('auth');
 
